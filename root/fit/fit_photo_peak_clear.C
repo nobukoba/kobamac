@@ -1,5 +1,5 @@
 void fit_photo_peak_clear(){
-  std::cout << std::endl << "Macro: kobamac/root/fit/fit_photo_peak_clear.C" << std::endl;
+  std::cout << std::endl << "Macro: fit_photo_peak_clear.C" << std::endl;
   TCanvas* canvas = gPad->GetCanvas();
   if (canvas == 0) {
     std::cout << "There is no canvas. The script is terminated." << std::endl;
@@ -18,7 +18,7 @@ void fit_photo_peak_clear(){
   TIter next(listofpri);
   TObject *obj;
   TH1 *hist = 0;
-  while (obj = next()){
+  while ((obj = next())){
     if (obj->InheritsFrom("TH2")) {
       std::cout << "This script can not handle TH2 histograms." << std::endl;
       return;
@@ -33,7 +33,7 @@ void fit_photo_peak_clear(){
     return;
   }
   
-  while (obj = next()){
+  while ((obj = next())){
     TString objname = obj->GetName();
     if (objname.EqualTo("TLine")) {
       listofpri->Remove(obj);
@@ -53,7 +53,7 @@ void fit_photo_peak_clear(){
 
   TIter nextfunc(funclist);
   TF1 *funcobj = 0;
-  while (funcobj = (TF1*)nextfunc()){
+  while ((funcobj = (TF1*)nextfunc())){
     TString funcname = funcobj->GetName();
     if(funcname.BeginsWith("fit_photo_peak")
        &&funcname.EndsWith(Form("_%d",j-1))){

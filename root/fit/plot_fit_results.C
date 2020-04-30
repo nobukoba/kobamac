@@ -16,26 +16,16 @@ void plot_fit_results(){
 }
 
 void plot_fit_results(const char * funcname){
-  std::cout << std::endl << "Macro: kobamac/root/plot_fit_results.C" << std::endl;
-  TCanvas* canvas = gPad->GetCanvas();
-  if (canvas == 0) {
-    std::cout << "There is no canvas. The script is terminated." << std::endl;
+  std::cout << std::endl << "Macro: plot_fit_results.C" << std::endl;
+  if (!gPad) {
+    std::cout << "There is no gPad. This script is terminated." << std::endl;
     return;
   }
-  TVirtualPad *sel_pad = canvas->GetPad(gPad->GetNumber());
-  if (sel_pad == 0) {
-    std::cout << "There is no sel_pad. The script is terminated." << std::endl;
-    return;
-  }
-  TList *listofpri = sel_pad->GetListOfPrimitives();
-  if (listofpri == 0) {
-    std::cout << "The pad includes nothing. The script is terminated." << std::endl;
-    return;
-  }
+  TList *listofpri = gPad->GetListOfPrimitives();
   TIter next(listofpri);
   TObject *obj;
   TH1 *hist = 0;
-  while (obj = next()){
+  while ((obj = next())){
     if (obj->InheritsFrom("TH2")) {
       std::cout << "This script can not handle TH2 histograms." << std::endl;
       return;
@@ -66,7 +56,8 @@ void plot_fit_results(const char * funcname){
   xrange = xmax - xmin;
   hist->GetXaxis()->SetRangeUser(xmin - xrange / 3., xmax + xrange*(2./3.));
   hist->Draw();
-  canvas->Update();
+  gPad->Update();
+  gPad->GetFrame()->SetBit(TBox::kCannotMove);
 
   TPaveStats *ps = (TPaveStats*)sel_pad->GetPrimitive("stats");
   if (ps == 0) {
@@ -107,9 +98,8 @@ void plot_fit_results(const char * funcname){
   
   // the following line is needed to avoid that the automatic redrawing of stats
   hist->SetStats(0);
-  sel_pad->Modified();
-  sel_pad->Update();
-  sel_pad->Update();
+  gPad->Update();
+  gPad->Modified();
   new TGMsgBox(gClient->GetRoot(),0, "wait", "wait", kMBIconAsterisk, kMBYes);
   hist->SetStats(1);
   ps->SetName("stats");
