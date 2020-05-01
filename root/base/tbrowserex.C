@@ -288,6 +288,11 @@ public:
   ClassDef(TGListTreeItemEx,0)
 };
 
+/* If you run the TBrowserEx in interpriter mode, the 
+histogram is duplicated in ROOT_memory from ROOT_Files...
+auto start in .rootlogin.C works well. why?
+ */
+
 class TBrowserEx : public TBrowser {
 protected:
   TGFileBrowserEx  *file_browser;
@@ -381,7 +386,7 @@ public:
     fld->Browse(this);
     
     macro_fListTree = macro_browser->GetListTree();
-    macro_browser->AddFSDirectory(gEnv->GetValue("KOBAMAC_DIR","."),"kobmac/root","Add");
+    macro_browser->AddFSDirectory(gEnv->GetValue("KOBAMAC_DIR","."),"kobamac/root","Add");
     macro_browser->ApplyFilter(2);
     SetDNDSourceRecursive(macro_fListTree,macro_fListTree->GetFirstItem(),0);
     TGListTreeItem *ltitem;
