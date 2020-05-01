@@ -1,10 +1,3 @@
-#if defined(__CINT__) && !defined(__MAKECINT__)
-{
-  gSystem->CompileMacro("./kobaprg/root/base/tbrowserex.C","k");
-  tbrowserex();
-}
-#else
-
 #include <iostream>
 #include <string.h>
 
@@ -388,7 +381,7 @@ public:
     fld->Browse(this);
     
     macro_fListTree = macro_browser->GetListTree();
-    macro_browser->AddFSDirectory("kobaprg/root","kobaprg/root","Add");
+    macro_browser->AddFSDirectory(gEnv->GetValue("KOBAMAC_DIR","."),"kobmac/root","Add");
     macro_browser->ApplyFilter(2);
     SetDNDSourceRecursive(macro_fListTree,macro_fListTree->GetFirstItem(),0);
     TGListTreeItem *ltitem;
@@ -478,17 +471,18 @@ public:
     hist_fListTree->DoubleClicked(ltitem,1); ltitem->SetOpen(1);
     /* see https://sft.its.cern.ch/jira/browse/ROOT-9262
        for gROOT->GetListOfCleanups()*/
+    /* This causes segv when typing .q after closing the browserex
     gROOT->GetListOfCleanups()->Add(&list_of_active_histos);
-    gROOT->GetListOfCleanups()->Add(&list_of_ordered_active_histos);
+    gROOT->GetListOfCleanups()->Add(&list_of_ordered_active_histos); */
     TTimer::SingleShot(200,"TBrowserEx",this,"TBrowserExRefresh()");
   }
   
   ~TBrowserEx(){
     gROOT->GetListOfBrowsers()->Remove(this);
-    /* printf("~TBrowserEx");
+    /*printf("~TBrowserEx");
        gROOT->GetListOfBrowsers()->Remove(this);
        delete hist_browser;
-       delete macro_browser; */
+       delete macro_browser;*/
   }
   /* void CloseWindow(){
      gApplication->Terminate();
@@ -1394,6 +1388,10 @@ public:
 };
 
 void tbrowserex(){
+#if defined(__CINT__) && !defined(__MAKECINT__)
+  std::cout << "Execute with compilation like: .x tbrowserex.C+" << std::endl;
+#else
   gROOT->ProcessLine("TBrowserEx *tbrowserex_obj = new TBrowserEx();");
-}
 #endif
+  return;
+}

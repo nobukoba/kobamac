@@ -1,4 +1,9 @@
-{
+#include "TROOT.h"
+#include "TEnv.h"
+#include "TStyle.h"
+#include "TSystem.h"
+
+void ini_kobamac(){
   gEnv->SetValue("Print.Command","lpr -P%p");
   //gEnv->SetValue("Print.Printer","-Pa3c4476 -o PageSize=A4 -o PageRegion=A4");
   gEnv->SetValue("Print.Printer","a3c4476");
@@ -10,8 +15,7 @@
   gEnv->SetValue("Canvas.ShowToolTips", "true");
   gEnv->SetValue("Canvas.ShowToolBar", "true");
   gEnv->SetValue("Canvas.ShowEditor", "false");
-  gROOT->SetMacroPath(".:./kobaprg/root:../..");
-
+  
   gROOT->SetStyle("Plain");
   gStyle->SetHistFillColor(0);
   gStyle->SetHistLineColor(kBlue);
@@ -50,12 +54,18 @@
   gStyle->SetLabelSize(0.04,"XYZ");
   gStyle->SetTextSize(0.04);
   gStyle->SetStatFontSize(0.04);
-  gStyle->SetTitleFontSize(0.04);
+  gStyle->SetTitleFontSize(0.04);  
+  /*gROOT->ForceStyle();*/
   
-  //gROOT->ForceStyle();
   if (gSystem->AccessPathName("lib/libAllGrutinizer.so")==0) {
     gSystem->Load("lib/libAllGrutinizer.so");
   }
-  gROOT->ProcessLine(".x kobaprg/root/base/tbrowserex.C");
+  
+  /* std::cout << "macro_dir: " << macro_dir << std::endl; */
+  TString cmd = Form("find %s -type d -not -path '*/\.*' | tr -d '\r' | tr '\n' ':' | sed -e 's/:$//'",gEnv->GetValue("KOBAMAC_DIR","./"));
+  TString s = gSystem->GetFromPipe(cmd.Data());
+  gROOT->SetMacroPath(s.Data());
+  TString cmd = Form(".L %s/base/tbrowserex.C+", gEnv->GetValue("KOBAMAC_DIR","./"));
+  gROOT->ProcessLine(cmd.Data());
+  return;
 }
-
