@@ -1,5 +1,5 @@
 void cut_xy_sel_pad(){
-  gROOT->ProcessLine(".L ./get_th2_in_sel_pad.C");
+  gROOT->ProcessLine(Form(".L %s/ForSelectedPad/get_th2_in_sel_pad.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   TH2* hist = (TH2*)gROOT->ProcessLine("get_th2_in_sel_pad();");
   if(hist == 0){return;}
 
@@ -13,7 +13,7 @@ void cut_xy_sel_pad(){
   Double_t x1, x2, y1, y2;
   iss >> x1 >> x2 >> y1 >> y2;
 
-  gROOT->ProcessLine(".L ../cui/cut_xy.C");
+  gROOT->ProcessLine(Form(".L %s/cui/cut_xy.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   gROOT->ProcessLine(Form("cut_xy((TH1*)%p,%f,%f,%f,%f)",hist, x1, x2, y1, y2));
 
   return;

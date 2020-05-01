@@ -12,7 +12,7 @@ void clone_active_histos(){
   if (!gBrowserEx) {return;}
   TIter next(gBrowserEx->GetListOfOrderedActiveHistos());
   TH1 * hist;
-  gROOT->ProcessLine(".L ../cui/clone.C");
+  gROOT->ProcessLine(Form(".L %s/cui/clone.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   while((hist = (TH1*)next())){
     gROOT->ProcessLine(Form("clone((TH1*)%p)",hist));
   }

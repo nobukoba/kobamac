@@ -12,7 +12,7 @@ void add_active_histos(){
   if (!gBrowserEx) {return;}
   TIter next(gBrowserEx->GetListOfOrderedActiveHistos());
   Int_t k = 0;
-  gROOT->ProcessLine(".L ../cui/add.C");
+  gROOT->ProcessLine(Form(".L %s/cui/add.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   TH1 *hadded = 0;
   TH1 *hist;
   while((hist = (TH1 *)next())){

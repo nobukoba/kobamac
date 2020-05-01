@@ -1,5 +1,5 @@
 void transform_1d(){
-  gROOT->ProcessLine(".L ./get_th1_in_sel_pad.C");
+  gROOT->ProcessLine(Form(".L %s/ForSelectedPad/get_th1_in_sel_pad.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   TH1* hist = (TH1*)gROOT->ProcessLine("get_th1_in_sel_pad();");
   if(hist == 0){return;}
   

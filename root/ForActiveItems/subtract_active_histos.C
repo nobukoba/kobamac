@@ -19,7 +19,7 @@ void subtract_active_histos(){
   Int_t k = 0;
   TH1 *hist;
   TH1 *subtracted = 0;
-  gROOT->ProcessLine(".L ../cui/sub.C");
+  gROOT->ProcessLine(Form(".L %s/cui/sub.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   while((hist = (TH1 *)next())){
     if (k==0) {
       subtracted = (TH1*)gROOT->ProcessLine(Form("sub((TH1*)%p,(TH1*)%p,1.0,0.0);",hist,hist));

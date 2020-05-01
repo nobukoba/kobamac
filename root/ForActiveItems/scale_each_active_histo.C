@@ -13,7 +13,7 @@ void scale_each_active_histo(){
   if (!gBrowserEx) {return;}
   TIter next(gBrowserEx->GetListOfOrderedActiveHistos());
   TH1 * hist;
-  gROOT->ProcessLine(".L ../cui/scale.C");
+  gROOT->ProcessLine(Form(".L %s/cui/scale.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   while((hist = (TH1*)next())){
     TString disstr = "Please enter scale for ";
     disstr += hist->GetName();
