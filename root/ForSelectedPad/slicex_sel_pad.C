@@ -3,8 +3,8 @@ void slicex_sel_pad(){
   TH2* hist = (TH2*)gROOT->ProcessLine("get_th2_in_sel_pad();");
   if(hist == 0){return;}
 
-  gROOT->ProcessLine(Form(".L %s/cui/slicex.C", gEnv->GetValue("KOBAMAC_DIR",".")));
-  gROOT->ProcessLine(Form("slicex((TH1*)%p)",hist));
-
+  gROOT->ProcessLine(Form(".x %s/cui/slicex.C((TH1*)%p)",
+			  gEnv->GetValue("KOBAMAC_DIR","."),
+			  hist));
   return;
 }

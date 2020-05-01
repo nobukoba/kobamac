@@ -12,7 +12,8 @@ void banx_sel_pad(){
   Double_t par0, par1;
   iss >> par0 >> par1;
   
-  gROOT->ProcessLine(Form(".L %s/cui/banx.C", gEnv->GetValue("KOBAMAC_DIR",".")));
-  gROOT->ProcessLine(Form("banx((TH1*)%p,%f,%f)",hist,par0,par1));
+  gROOT->ProcessLine(Form(".x %s/cui/banx.C((TH1*)%p,%f,%f)",
+			  gEnv->GetValue("KOBAMAC_DIR","."),
+			  hist,par0,par1));
   return;
 }

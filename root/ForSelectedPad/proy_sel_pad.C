@@ -3,8 +3,8 @@ void proy_sel_pad(){
   TH2* hist = (TH2*)gROOT->ProcessLine("get_th2_in_sel_pad();");
   if(hist == 0){return;}
 
-  gROOT->ProcessLine(Form(".L %s/cui/proy.C", gEnv->GetValue("KOBAMAC_DIR",".")));
-  gROOT->ProcessLine(Form("proy((TH1*)%p)",hist));
-
+  gROOT->ProcessLine(Form(".x %s/cui/proy.C((TH1*)%p)",
+			  gEnv->GetValue("KOBAMAC_DIR","."),
+			  hist));
   return;
 }

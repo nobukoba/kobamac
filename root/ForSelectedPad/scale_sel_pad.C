@@ -11,8 +11,8 @@ void scale_sel_pad(){
   Double_t par;
   iss >> par;
 
-  gROOT->ProcessLine(Form(".L %s/cui/scale.C", gEnv->GetValue("KOBAMAC_DIR",".")));
-  gROOT->ProcessLine(Form("scale((TH1*)%p,%f)",hist,par));
-
+  gROOT->ProcessLine(Form(".x %s/cui/scale.C((TH1*)%p)",
+			  gEnv->GetValue("KOBAMAC_DIR","."),
+			  hist));
   return;
 }
