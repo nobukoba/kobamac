@@ -66,5 +66,8 @@ void ini_kobamac(){
   TString s = gSystem->GetFromPipe(cmd.Data());
   gROOT->SetMacroPath(s.Data());
   gROOT->ProcessLine(Form(".L %s/base/tbrowserex.C+", gEnv->GetValue("KOBAMAC_DIR","./")));
+  gROOT->ProcessLine(Form(".L %s/base/WaitOneClickX.C", gEnv->GetValue("KOBAMAC_DIR","./")));
+  gROOT->ProcessLine(Form(".L %s/base/WaitOneClickY.C", gEnv->GetValue("KOBAMAC_DIR","./")));
+  gROOT->ProcessLine(Form(".L %s/base/WaitOneClickT.C", gEnv->GetValue("KOBAMAC_DIR","./")));
   return;
 }
