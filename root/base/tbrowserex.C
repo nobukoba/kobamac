@@ -290,7 +290,7 @@ public:
 
 /* If you run the TBrowserEx in interpriter mode, the 
 histogram is duplicated in ROOT_memory from ROOT_Files...
-auto start in .rootlogin.C works well. why?
+auto start in .rootlogin.C works well. why? 2020.05.01 Nobu
  */
 
 class TBrowserEx : public TBrowser {
