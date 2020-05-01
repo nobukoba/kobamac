@@ -12,7 +12,7 @@ void mulfit_narrow_gaus_for_active(){
   TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
   if (!gBrowserEx) {return;}
   TGListTree *hist_fListTree = gBrowserEx->GetHistListTree();
-  gROOT->ProcessLine(".L fit_narrow_gaus.C");
+  gROOT->ProcessLine(Form(".L %s/fit/fit_narrow_gaus.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   TIter next(gBrowserEx->GetHistListTreeActiveHistos());
   TObjString* objstr;
   while((objstr = (TObjString*)next())){

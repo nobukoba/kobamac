@@ -4,7 +4,7 @@
   if (gBrowserEx_tmp) {
     gSystem->cd((gBrowserEx_tmp->GetInitialWorkingDir()).Data());
   }else{return;}
-  gSystem->CompileMacro("./kobaprg/root/graph/text_to_graph.C","k");
+  gSystem->CompileMacro(Form("%s/graph/text_to_graph.C", gEnv->GetValue("KOBAMAC_DIR",".")),"k");
   text_to_graph();
 }
 #else
