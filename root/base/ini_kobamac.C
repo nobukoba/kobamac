@@ -62,10 +62,9 @@ void ini_kobamac(){
   }
   
   /* std::cout << "macro_dir: " << macro_dir << std::endl; */
-  TString cmd = Form("find %s -type d -not -path '*/\.*' | tr -d '\r' | tr '\n' ':' | sed -e 's/:$//'",gEnv->GetValue("KOBAMAC_DIR","./"));
+  TString cmd = Form("find %s -type d -not -path '*/\\.*' | tr -d '\r' | tr '\n' ':' | sed -e 's/:$//'",gEnv->GetValue("KOBAMAC_DIR","./"));
   TString s = gSystem->GetFromPipe(cmd.Data());
   gROOT->SetMacroPath(s.Data());
-  TString cmd = Form(".L %s/base/tbrowserex.C+", gEnv->GetValue("KOBAMAC_DIR","./"));
-  gROOT->ProcessLine(cmd.Data());
+  gROOT->ProcessLine(Form(".L %s/base/tbrowserex.C+", gEnv->GetValue("KOBAMAC_DIR","./")));
   return;
 }
