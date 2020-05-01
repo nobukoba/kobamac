@@ -1,7 +1,4 @@
-#include "TROOT.h"
-
 void zone_4_3(){
-  gROOT->ProcessLine(Form(".L %s/zone/zone_x_y.C", gEnv->GetValue("KOBAMAC_DIR",".")));
-  gROOT->ProcessLine("zone_x_y(4,3)");
+  gROOT->ProcessLine(Form(".x %s/zone/zone_x_y.C(4,3)", gEnv->GetValue("KOBAMAC_DIR",".")));
   return;
 }
