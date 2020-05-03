@@ -61,6 +61,7 @@ void ini_kobamac(){
     gSystem->Load("lib/libAllGrutinizer.so");
   }
 
+
   TString cmd = Form("echo $(cd %s && pwd)", gEnv->GetValue("KOBAMAC_DIR","."));
   TString s = gSystem->GetFromPipe(cmd.Data());
   gEnv->SetValue("KOBAMAC_DIR",s.Data());
