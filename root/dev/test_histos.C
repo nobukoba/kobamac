@@ -5,7 +5,9 @@ void test_histos(){
   TH1D * h2 = new TH1D("h2","h2", 30, -4, 4);
   TH1D * h3 = new TH1D("h3","h3", 30, -4, 4);
   TH2D * h4 = new TH2D("h4","h4", 40, -4, 4, 40, -4, 4);
-  TDirectory * dir = gROOT->mkdir("histos_dir");
+  /* The name of the dir is not shown at root[] .ls
+  TDirectory * dir = gROOT->mkdir("histos_dir"); */
+  TDirectoryFile * dir = new TDirectoryFile("histos_dir","histos_dir","",gROOT);
   dir->cd();
   TH1D * h5 = new TH1D("h5","h5", 50, -4, 4);
   TH1D * h6 = new TH1D("h6","h6", 60, -4, 4);
