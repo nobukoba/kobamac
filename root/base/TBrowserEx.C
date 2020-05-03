@@ -148,7 +148,8 @@ public:
   {
     gSystem->Setenv("LANG","C");
     /* To set global parameter */
-    gROOT->ProcessLine(Form("TBrowserEx *gBrowserEx = (TBrowserEx *)0x%lx;",(ULong_t)this));
+    /* gROOT->ProcessLine(Form("TBrowserEx *gBrowserEx = (TBrowserEx *)0x%lx;",(ULong_t)this)); */
+    gROOT->ProcessLine(Form("gBrowserEx = (TBrowserEx *)0x%lx;",(ULong_t)this));
     initial_working_dir = gSystem->pwd();
     
     TString cmd;
