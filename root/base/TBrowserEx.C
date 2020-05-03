@@ -1,44 +1,72 @@
-#include <iostream>
-#include <string.h>
+/*
+  TBrowserEx.C --- Extended ROOT Object Browser class
+  Author:   Nobu Kobayashi
+  Facility: Research Center for Nuclear Physics, University of Osaka
+  Created:  03-MAY-2020 by Nobu Kobayashi
+  Version 1.00 03-MAY-2020 by Nobu Kobayashi
 
+  03-MAY-2020
+
+  This macro was separated from tbrowserex.C to rearrange reasonable
+  and understandable file structure. The TBrowserEx in interpriter
+  mode, the histogram is duplicated in ROOT_memory from ROOT_Files...
+  auto start in .rootlogin.C works well. why? --> Solved. Use
+  gROOT->GetList() instead of gDirectory->GetList() for
+  fld->AddFolder(). Now the TBrowserEx looks stable. You can new and
+  delete the TBrowserEx and TBrowser many times. At first, by using
+  CloseWindow(), the whole ROOT was terminated when clicking the close
+  button or typing .q. But this is not convinient, and removed this
+  functionality. After that multiple new and delete of TBrowserEx
+  caused segv because probably the registration of TGListTreeItems was
+  wrong or the destructor (dtor) was wrong. Again, now it looks OK.
+  If option="FCI" is used for TBrowserEx, still segv will occur for
+  typing ".q" command for this TBrowserEx and also TBrowser. This is
+  confirmed with root v5 & v6. This looks a problem in the ROOT
+  side. "TGListTreeItem *hist_fListTreeItem;" can not be defined as a
+  memeber parameter of TBrowser. This causes sedv when .q. We shoud
+  change language to English by "gSystem->Setenv("LANG","C");",
+  because TRootCanvas::PrintCanvas() call "lpstat -v". This line
+  returns words with wrong ordering in Japanese environment.
+  "gROOT->GetListOfCleanups()->Add(&list_of_active_histos);" and
+  "gROOT->GetListOfCleanups()->Add(&list_of_ordered_active_histos);"
+  causes segv when typing .q after closing the TBrowserEx.  See
+  https://sft.its.cern.ch/jira/browse/ROOT-9262 for
+  gROOT->GetListOfCleanups().
+*/
+
+#include <iostream>
 #include "TROOT.h"
-#include "TStyle.h"
 #include "TSystem.h"
-#include "TPad.h"
-#include "TBox.h"
-#include "TFrame.h"
 #include "TEnv.h"
-#include "TBrowser.h"
-#include "TRootBrowser.h"
-#include "TApplication.h"
-#include "GuiTypes.h"
+#include "KeySymbols.h"
 #include "TGClient.h"
-#include "TGObject.h"
 #include "TGMenu.h"
 #include "TGFileBrowser.h"
 #include "TGListTree.h"
 #include "TGTab.h"
-#include "TCanvas.h"
 #include "TGComboBox.h"
 #include "TGTextEntry.h"
 #include "TGPicture.h"
-#include "TGDimension.h"
 #include "TGInputDialog.h"
 #include "TGTextEditDialogs.h"
+#include "TBrowser.h"
+#include "TRootBrowser.h"
 #include "TRootCanvas.h"
-#include "TMarker.h"
-#include "TFile.h"
-#include "TList.h"
 #include "TClass.h"
-#include "TTree.h"
 #include "TClassMenuItem.h"
+#include "TCanvas.h"
+#include "TFrame.h"
+#include "TFile.h"
 #include "TKey.h"
+#include "TList.h"
 #include "TFolder.h"
+#include "TBox.h"
+#include "TTree.h"
 #include "TH1.h"
 #include "TH2.h"
 #include "TF1.h"
+#include "TMarker.h"
 #include "TGraphErrors.h"
-#include "KeySymbols.h"
 
 class TGFileBrowserEx : public TGFileBrowser {
 public:
@@ -50,7 +78,7 @@ public:
   void SetRootDir(){fRootDir = fListTree->GetFirstItem();}
   TGComboBox* GetDrawOptionPointer(){return fDrawOption;}
   TGPictureButton* GetRefreshButtonPointer(){return fRefreshButton;}
-  ClassDef(TGFileBrowserEx,0)
+  ClassDef(TGFileBrowserEx,2);
 };
 
 class TGListTreeItemEx : public TGListTreeItem {
@@ -58,13 +86,8 @@ public:
   TGListTreeItemEx(TGClient *client) :
     TGListTreeItem(client){}
   Int_t GetY(){return this->fY;}
-  ClassDef(TGListTreeItemEx,0)
+  ClassDef(TGListTreeItemEx,2);
 };
-
-/* If you run the TBrowserEx in interpriter mode, the 
-histogram is duplicated in ROOT_memory from ROOT_Files...
-auto start in .rootlogin.C works well. why? 2020.05.01 Nobu
- */
 
 class TBrowserEx : public TBrowser {
 protected:
@@ -73,9 +96,6 @@ protected:
   TGFileBrowserEx  *hist_browser;
   TGListTree       *macro_fListTree;
   TGListTree       *hist_fListTree;
-  /* This causes sedv when .q was input!
-     TGListTreeItem   *hist_fListTreeItem;
-  */
   TList            hist_fListTree_active_items;
   TList            hist_fListTree_active_histos;
   TList            list_of_active_histos;
@@ -110,9 +130,6 @@ public:
   
   TBrowserEx() :
     TBrowser("kobabrowser","ROOT Object Browser Extended",800,1000,0,"CI"),
-    /* if option="FCI" is used, segv will occur for
-       typing ".q" command for this TBrowserEx and also TBrowser.
-       Confirmed with root v5 & v6. */
     file_browser(0),
     macro_browser(0),
     hist_browser(0),
@@ -126,21 +143,6 @@ public:
     str_input_dialog_4("0.0 1.0 0.0 1.0"),
     sprinter(""), sprintCmd(""), sprintOpt("")
   {
-    /* gROOT->GetListOfBrowsers()->Remove(this);
-       delete this->GetContextMenu();
-       this->GetBrowserImp()->GetMainFrame()->Connect("CloseWindow()", "TBrowserEx", this, "CloseWindow()");
-       gROOT->GetListOfCleanups()->Remove(this);
-       gROOT->GetListOfCleanups()->Remove(macro_browser);
-       gROOT->GetListOfCleanups()->Remove(hist_browser);
-       StartEmbedding(TRootBrowser::kLeft,-1);
-       macro_browser = new TGFileBrowserEx(gClient->GetRoot(), this, 200, 500);
-       StopEmbedding("Macros");
-       StartEmbedding(TRootBrowser::kLeft,-1);
-       hist_browser = new TGFileBrowserEx(gClient->GetRoot(), this, 200, 500);
-       StopEmbedding("Histos"); */
-    /* Change language to English! TRootCanvas::PrintCanvas() call "lpstat -v".
-       This line returns words with wrong ordering in Japanese environment.
-    */
     gSystem->Setenv("LANG","C");
     /* To set global parameter */
     gROOT->ProcessLine(Form("TBrowserEx *gBrowserEx = (TBrowserEx *)0x%lx;",(ULong_t)this));
@@ -149,7 +151,6 @@ public:
     TString cmd;
     cmd.Form("new TGFileBrowserEx(gClient->GetRoot(), (TBrowser *)0x%lx, 200, 500);", (ULong_t)this);
     macro_browser = (TGFileBrowserEx*) this->ExecPlugin("Macros", 0, cmd.Data(), 0);
-    
     cmd.Form("new TGFileBrowserEx(gClient->GetRoot(), (TBrowser *)0x%lx, 200, 500);", (ULong_t)this);
     hist_browser = (TGFileBrowserEx*)  this->ExecPlugin("Histos", 0, cmd.Data(), 0);
     
@@ -248,29 +249,9 @@ public:
     hist_fListTree->DoubleClicked(ltitem,1); ltitem->SetOpen(1);
     ltitem = hist_fListTree->FindChildByName(0,"ROOT_Files");
     hist_fListTree->DoubleClicked(ltitem,1); ltitem->SetOpen(1);
-    /* see https://sft.its.cern.ch/jira/browse/ROOT-9262
-       for gROOT->GetListOfCleanups()*/
-    /* This causes segv when typing .q after closing the browserex
-    gROOT->GetListOfCleanups()->Add(&list_of_active_histos);
-    gROOT->GetListOfCleanups()->Add(&list_of_ordered_active_histos); */
     TTimer::SingleShot(200,"TBrowserEx",this,"TBrowserExRefresh()");
   }
-  
-  ~TBrowserEx(){
-    /* gROOT->GetListOfBrowsers()->Remove(this); */
-    /*printf("~TBrowserEx");
-       gROOT->GetListOfBrowsers()->Remove(this);
-       delete hist_browser;
-       delete macro_browser;*/
-  }
-  /* void CloseWindow(){
-     gApplication->Terminate();
-     this->GetBrowserImp()->GetMainFrame()->CloseWindow();
-     
-     this->Delete();
-     delete this;
-     gClient->Delete();
-     } */
+  ~TBrowserEx(){}
   
   void ProcessActivated(Int_t id){
     TString gTQSender_name = ((TObject*)gTQSender)->GetName();
@@ -424,7 +405,6 @@ public:
 	    TObjString objstr_tmp(Form("%lld",(unsigned long long)NextItem(cur_item)));
 	    if (!hist_fListTree_active_items.FindObject(&objstr_tmp)) {
 	      cur_ListTree->HighlightItem(NextItem(cur_item),kTRUE,kTRUE);
-	      
 	      hist_fListTree_active_items.Add(new TObjString(Form("%lld",(unsigned long long)NextItem(cur_item))));
 	    }
 	  }
@@ -503,7 +483,6 @@ public:
 	}
 	TString opt = hist_browser->GetDrawOptionPointer()->GetTextEntry()->GetText();
 	userdata->Draw(opt.Data());
-
       } else if (userdata->InheritsFrom("TF1")){
 	if (isel <= 32) {
 	  hist_browser->GetDrawOptionPointer()->Select(35,1);
@@ -774,7 +753,6 @@ public:
     Int_t ret = 0;
     Bool_t pname = kTRUE;
     char *printer, *printCmd;
-    
     if (sprinter == "")
       printer = StrDup(gEnv->GetValue("Print.Printer", ""));
     else
@@ -784,7 +762,6 @@ public:
     else
       printCmd = StrDup(sprintCmd);
     sprintOpt = option;
-    
     new TGPrintDialog((TRootBrowser*)gClient->GetDefaultRoot(),
 		      (TRootCanvas*)gPad->GetCanvas()->GetCanvasImp(),
 		      400, 150,
@@ -792,10 +769,8 @@ public:
     if (ret) {
       sprinter  = printer;
       sprintCmd = printCmd;
-      
       if (sprinter == "")
 	pname = kFALSE;
-      
       TString fn = "rootprint";
       FILE *f = gSystem->TempFileName(fn, gEnv->GetValue("Print.Directory", gSystem->TempDirectory()));
       if (f) fclose(f);
@@ -953,7 +928,7 @@ public:
       file_in_str.Resize(file_in_str.Length()-6);
     }
     file_in_str += ".root";
-    
+
     TFile *local = TFile::Open(file_in_str,"recreate");
     TIter next((TList*)c);
     TObject *obj;
@@ -1163,14 +1138,5 @@ public:
     }
     return &hist_fListTree_active_histos;
   }
-  ClassDef(TBrowserEx,0)
+  ClassDef(TBrowserEx,2);
 };
-
-void tbrowserex(){
-#if defined(__CINT__) && !defined(__MAKECINT__)
-  std::cout << "Execute with compilation like: .x tbrowserex.C+" << std::endl;
-#else
-  gROOT->ProcessLine("TBrowserEx *tbrowserex_obj = new TBrowserEx();");
-#endif
-  return;
-}
