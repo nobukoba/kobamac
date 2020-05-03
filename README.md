@@ -25,14 +25,14 @@ Then the extended TBrowser opens. Instead of "root[2] TBrowserEx t", "root[2] tb
 root [2] tbr()
 
 ```
-If you want to load and execute the macro automatically, you can add the following lines in $HOME/.rootlogon.C
+If you want to load and execute the macro automatically, you can add the following lines in $HOME/.rootlogon.C.
 ```
 {
 ...
   /* For kobamac */
-  gEnv->SetValue("KOBAMAC_DIR","$HOME/kobamac");
-  gROOT->ProcessLine(".x $HOME/kobamac/root/base/ini_kobamac.C");
+  gEnv->SetValue("KOBAMAC_DIR","<path_to_kobamac>");
+  gROOT->ProcessLine(".x <path_to_kobamac>/root/base/ini_kobamac.C");
   gROOT->ProcessLine("TBrowserEx t");
 }
 ```
-If you do not have .rootlogon.C in $HOME, you can copy $KOBAMAC_DIR/root/base/roootlogon_example.C to $HOME.
+Please note that the <path_to_kobamac> part should be matched to the cloned directory, e.g, <path_to_kobamac>=/home/kobayash/ana/kobamac or <path_to_kobamac>=$HOME/ana/kobamac. In .rootlogon.C, relative path is not allowed as <path_to_kobamac>. <path_to_kobamac> can include "$HOME" and "~/". If you do not have .rootlogon.C in $HOME, you can copy $KOBAMAC_DIR/root/base/roootlogon_example.C to $HOME.
