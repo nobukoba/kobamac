@@ -33,9 +33,9 @@ void init() {
   //gStyle->SetTitleSize(0.5,"xyz");
   //gStyle->SetTitleSize(0.3,"");
   gStyle->SetPadTopMargin(0.08);
-  gStyle->SetPadRightMargin(0.15);
-  gStyle->SetPadLeftMargin(0.22);
-  gStyle->SetPadBottomMargin(0.25);
+  gStyle->SetPadRightMargin(0.13);
+  gStyle->SetPadLeftMargin(0.18);
+  gStyle->SetPadBottomMargin(0.22);
   //gStyle->SetLabelOffset(0.015,"xy");
   gStyle->SetOptStat(0);
   gStyle->SetOptLogz(1);
@@ -47,13 +47,12 @@ E_x = 0.006585*X + 5.051251
 */
 
 void cagra_nim_coin_208pb_prox() {
-  TFile *f = new TFile("date20190727_merged2_w_bgsub.root");
+  init();
+  gROOT->ForceStyle(); 
+  //TFile *f = new TFile("date20190727_merged2_w_bgsub.root");
+  //TH2 *hcln = (TH2*)f->Get("histOut");
+  TFile *f = new TFile("date20200428_w_bgsub.root");
   TH2 *hcln = (TH2*)f->Get("histOut");
-  //TH1 *hprx = (TH1*)f->Get("GXCEg_rgr_tg_thc_lw_add1_cut1_prx1");
-  hcln->GetYaxis()->SetLimits(hcln->GetYaxis()->GetXmin()/1000.,
-			      hcln->GetYaxis()->GetXmax()/1000.);
-  hcln->GetXaxis()->SetLimits(0.006585*hcln->GetXaxis()->GetXmin() + 5.051251,
-			      0.006585*hcln->GetXaxis()->GetXmax() + 5.051251);
   TH2 *hcln2 = (TH2*)hcln->Clone("hcln2");
   TGraph *gr = new TGraph();
   Double_t hwid = 0.1;
@@ -83,7 +82,8 @@ void cagra_nim_coin_208pb_prox() {
     }
   }
   hprx->SetEntries(hcln2->GetEntries());
-
+  hcln->GetXaxis()->SetRangeUser(1.5,8.5);
+  hprx->GetXaxis()->SetRangeUser(1.5,8.5);
   hcln2->Draw("colz");
   init();
   //gROOT->ForceStyle();
@@ -92,16 +92,17 @@ void cagra_nim_coin_208pb_prox() {
   hcln->SetStats(0);
   hprx->SetStats(0);
   hprx->SetLineColor(1);
-  hprx->SetTitleSize(0.12,"xyz");
-  hprx->SetLabelSize(0.12,"xyz");
-  hcln->SetTitleSize(0.12,"xyz");
-  hcln->SetLabelSize(0.12,"xyz");
+  hprx->SetTitleSize(0.10,"xyz");
+  hprx->SetLabelSize(0.10,"xyz");
+  hcln->SetTitleSize(0.10,"xyz");
+  hcln->SetLabelSize(0.10,"xyz");
+  hcln->SetLabelSize(0.,"x");
   hprx->GetXaxis()->SetTitleOffset(0.9);
   hprx->GetYaxis()->SetTitleOffset(0.7);
   hcln->GetYaxis()->SetTitleOffset(0.7);
   hcln->GetZaxis()->SetTitleOffset(0.3);
   hprx->GetXaxis()->SetTitle("Excitation energy #it{E_{x}} (MeV)");
-  hprx->GetYaxis()->SetTitle("Counts");
+  hprx->GetYaxis()->SetTitle("Counts / 10 keV");
   hcln->GetYaxis()->SetTitle("#splitline{#gamma-ray energy}{ #it{E_{#gamma}} (MeV)}");
   hprx->GetXaxis()->CenterTitle();
   hprx->GetYaxis()->CenterTitle();
@@ -124,11 +125,12 @@ void cagra_nim_coin_208pb_prox() {
   p2->Draw();
   p2->SetFillColor(0);
   p2->SetFillStyle(0);
+  init();
   
   p1->cd();
   hcln->Draw("");
   c1->Update();
-  hcln->GetZaxis()->SetLabelOffset(-0.02);
+  hcln->GetZaxis()->SetLabelOffset(-0.015);
   hcln->Draw("colz");
   c1->Update();
   TPaletteAxis *palette = (TPaletteAxis*)hcln->GetListOfFunctions()->FindObject("palette");
@@ -138,10 +140,19 @@ void cagra_nim_coin_208pb_prox() {
   palette->SetTitleSize(0.1);
   //hcln->Draw("colz");
   p2->cd();
+  //hprx->GetXaxis()->SetRange(2.,9.);
   hprx->Draw("hist");
   //gPad->Update();
   //hprx->Draw();
   //TCanvas 
   //(GXCEg_rgr_tg_thc_lw_add1_cln1);
+  TLatex latex;
+  latex.SetTextSize(0.10);
+  latex.SetTextAlign(13);  //align at top
+  p1->cd();
+  latex.DrawLatexNDC(.20,.90,"a)");
+  p2->cd();
+  latex.DrawLatexNDC(.20,.975,"b)");
+  c1->Print("coin_matrix_208pb.pdf");
   return;
 }

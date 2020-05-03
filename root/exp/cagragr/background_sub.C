@@ -2,9 +2,9 @@
 #include "TH2.h"
 
 void background_sub(){
-  TFile *f = new TFile("output/date20190727/merged2_th.root");
-  TH2 *hd = (TH2*)f->Get("Nobu/GXCEg_rgr_tg_thc");
-  TH2 *hb = (TH2*)f->Get("Nobu/GXCEg_rgr_bg_thc");
+  TFile *f = new TFile("hist_MakeClover_Nobu_20200427_toff2_2132_2158_th.root");
+  TH2 *hd = (TH2*)f->Get("Nobu/EgEx_rgr_tg_thc");
+  TH2 *hb = (TH2*)f->Get("Nobu/EgEx_rgr_bg_thc");
   hd->Draw("colz");
   hb->Draw("colz");
   
@@ -12,10 +12,10 @@ void background_sub(){
   //histOut->Reset();
   histOut->Add(hb,-1);
   histOut->Draw("colz");
-  double weight = 1.0;
+  double weight = 0.1;
   int r = 10;
-  int limit_m = 1.25*3;
-  int limit_n = 8.6*3;
+  int limit_m = 1*3;
+  int limit_n = 1.8*3;
   for (int i = 1; i <= hd->GetNbinsX(); i++){
     for (int j = 1; j <= hd->GetNbinsY(); j++){
       for (int k = 0; k < r; k++){
