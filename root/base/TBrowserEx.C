@@ -128,7 +128,7 @@ public:
   Int_t   GetCurrentHistNumber(){return current_hist_number;}
   void    SetCurrentHistNumber(Int_t num){current_hist_number = num;}
   
-  TBrowserEx(const char *name="tbrowserex",
+  TBrowserEx(const char *name="gBrowserEx",
 	     const char *title="ROOT Object Browser Extended",
 	     UInt_t width=800, UInt_t height=1000,
 	     TBrowserImp *extimp=0, Option_t *opt="CI") :
