@@ -84,8 +84,6 @@ void banty_gui(){
     b1 = tmpy;
   }
   
-  gROOT->ProcessLine(Form(".x %s/root/cui/banty.C((TH1*)%p,%f,%f,%f)",
-			  gEnv->GetValue("KOBAMAC_DIR","."),
-			  hist,par0,b0,b1));
-  return;
+  gROOT->ProcessLine(Form(".L %s/root/cui/banty.C", gEnv->GetValue("KOBAMAC_DIR","."));
+  gROOT->ProcessLine(Form("banty((TH1*)%p,%f,%f,%f)", hist,par0,b0,b1));
 }

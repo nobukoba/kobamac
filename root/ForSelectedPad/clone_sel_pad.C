@@ -3,8 +3,6 @@ void clone_sel_pad(){
   TH1* hist = (TH1*)gROOT->ProcessLine("get_th_in_sel_pad();");
   if(hist == 0){return;}
 
-  gROOT->ProcessLine(Form(".x %s/root/cui/clone.C((TH1*)%p)",
-			  gEnv->GetValue("KOBAMAC_DIR","."),
-			  hist));
-  return;
+  gROOT->ProcessLine(Form(".L %s/root/cui/clone.C", gEnv->GetValue("KOBAMAC_DIR","."));
+  gROOT->ProcessLine(Form("clone((TH1*)%p)", hist));
 }

@@ -12,8 +12,6 @@ void banty_sel_pad(){
   Double_t par0, par1, par2;
   iss >> par0 >> par1 >> par2;
 
-  gROOT->ProcessLine(Form(".x %s/root/cui/banty.C((TH1*)%p,%f,%f,%f)",
-			  gEnv->GetValue("KOBAMAC_DIR","."),
-			  hist,par0,par1,par2));
-  return;
+  gROOT->ProcessLine(Form(".L %s/root/cui/banty.C", gEnv->GetValue("KOBAMAC_DIR",".");
+  gROOT->ProcessLine(Form("banty((TH1*)%p,%f,%f,%f)", hist,par0,par1,par2));
 }

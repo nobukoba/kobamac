@@ -48,8 +48,7 @@ void bany_gui(){
     x1 = tmpx;
   }
   
-  gROOT->ProcessLine(Form(".x %s/root/cui/bany.C((TH1*)%p,%f,%f)",
-			  gEnv->GetValue("KOBAMAC_DIR","."),
-			  hist,x0,x1));
+  gROOT->ProcessLine(Form(".L %s/root/cui/bany.C", gEnv->GetValue("KOBAMAC_DIR","."));
+  gROOT->ProcessLine(Form("bany((TH1*)%p,%f,%f)", hist,x0,x1));
   return;
 }
