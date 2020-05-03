@@ -69,7 +69,8 @@ void ini_kobamac(){
   
   cmd = Form("find %s -type d -not -path '*/\\.*' | tr -d '\r' | tr '\n' ':' | sed -e 's/:$//'",gEnv->GetValue("KOBAMAC_DIR","."));
   s = gSystem->GetFromPipe(cmd.Data());
-
+  s.Prepend(":");
+  s.Prepend(gROOT->GetMacroPath());
   gROOT->SetMacroPath(s.Data());
   gROOT->ProcessLine(Form(".L %s/root/base/TBrowserEx.C+",   gEnv->GetValue("KOBAMAC_DIR",".")));
   gROOT->ProcessLine(Form(".L %s/root/base/tbr.C",           gEnv->GetValue("KOBAMAC_DIR",".")));
