@@ -12,6 +12,6 @@ void bany_sel_pad(){
   Double_t par0, par1;
   iss >> par0 >> par1;
 
-  gROOT->ProcessLine(Form(".L %s/root/cui/bany.C", gEnv->GetValue("KOBAMAC_DIR","."));
+  gROOT->ProcessLine(Form(".L %s/root/cui/bany.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   gROOT->ProcessLine(Form("bany((TH1*)%p,%f,%f)", hist,par0,par1));
 }

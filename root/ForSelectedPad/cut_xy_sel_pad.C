@@ -13,6 +13,6 @@ void cut_xy_sel_pad(){
   Double_t x1, x2, y1, y2;
   iss >> x1 >> x2 >> y1 >> y2;
 
-  gROOT->ProcessLine(Form(".L %s/root/cui/cut_xy.C", gEnv->GetValue("KOBAMAC_DIR","."));
+  gROOT->ProcessLine(Form(".L %s/root/cui/cut_xy.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   gROOT->ProcessLine(Form("cut_xy((TH1*)%p,%f,%f,%f,%f)", hist, x1, x2, y1, y2));
 }
