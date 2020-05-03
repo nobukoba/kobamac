@@ -1,10 +1,10 @@
 # kobamac
-An extended TBrowser "HistBrowser" and useful ROOT macros to hadle the histograms
+An extended TBrowser "TBrowserEx" and useful ROOT macros to handle the histograms
 
 ## How to install the macros from GitHub
 On the terminal, clone the macros by the following command.
 ```
-$ git clone https://github.com/nobukoba/kobamac.git
+$ git clone https://github.com/nobukoba/kobamac
 $ ls
 $ ... kobamac ...
 ```
@@ -25,3 +25,14 @@ Then the extended TBrowser opens. Instead of "root[2] TBrowserEx t", "root[2] tb
 root [2] tbr()
 
 ```
+If you want to load and execute the macro automatically, you can add the following lines in $HOME/.rootlogon.C
+```
+{
+...
+  /* For kobamac */
+  gEnv->SetValue("KOBAMAC_DIR","$HOME/kobamac");
+  gROOT->ProcessLine(".x $HOME/kobamac/root/base/ini_kobamac.C");
+  gROOT->ProcessLine("TBrowserEx t");
+}
+```
+If you do not have .rootlogon.C in $HOME, you can copy $KOBAMAC_DIR/root/base/roootlogon_example.C to $HOME.

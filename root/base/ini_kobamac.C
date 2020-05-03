@@ -64,7 +64,7 @@ void ini_kobamac(){
   TString cmd = Form("echo $(cd %s && pwd)", gEnv->GetValue("KOBAMAC_DIR","."));
   TString s = gSystem->GetFromPipe(cmd.Data());
   gEnv->SetValue("KOBAMAC_DIR",s.Data());
-  /* std::cout <<"KOBAMAC_DIR: " << gEnv->GetValue("KOBAMAC_DIR","") << std::endl; */
+  std::cout <<"ini_kobamac.C: KOBAMAC_DIR=" << gEnv->GetValue("KOBAMAC_DIR","") << std::endl;
   
   cmd = Form("find %s -type d -not -path '*/\\.*' | tr -d '\r' | tr '\n' ':' | sed -e 's/:$//'",gEnv->GetValue("KOBAMAC_DIR","."));
   s = gSystem->GetFromPipe(cmd.Data());
