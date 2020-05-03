@@ -35,4 +35,4 @@ If you want to load and execute the macro automatically, you can add the followi
   gROOT->ProcessLine("TBrowserEx t");
 }
 ```
-Please note that the <path_to_kobamac> part should be matched to the cloned directory, e.g, <path_to_kobamac>=/home/kobayash/ana/kobamac or <path_to_kobamac>=$HOME/ana/kobamac. In .rootlogon.C, relative path is not allowed as <path_to_kobamac>. <path_to_kobamac> can include "$HOME" and "~/". If you do not have .rootlogon.C in $HOME, you can copy $KOBAMAC_DIR/root/base/roootlogon_example.C to $HOME.
+Please note that the <path_to_kobamac> part should be matched to the cloned directory, e.g, <path_to_kobamac>=/home/kobayash/ana/kobamac or <path_to_kobamac>=$HOME/ana/kobamac. In .rootlogon.C, only absolute path should work as <path_to_kobamac>. <path_to_kobamac> can include "$HOME" and "~/". If you do not have .rootlogon.C in $HOME, you can copy $KOBAMAC_DIR/root/base/roootlogon_example.C to $HOME.
