@@ -62,7 +62,7 @@ void ini_kobamac(){
   }
 
   TString str = __FILE__; /* preprocessor command __FILE__ returns the file name of the file itself */ 
-  std::cout << __FILE__ << std::endl;
+  /* std::cout << __FILE__ << std::endl; */
   str.Resize(str.Length()-13); /* Remove the string "ini_kobamac.C" at the last */
   TString cmd = Form("echo $(cd %s && pwd)", str.Data());
   str = gSystem->GetFromPipe(cmd.Data());
