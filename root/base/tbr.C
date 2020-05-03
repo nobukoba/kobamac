@@ -1,3 +1,3 @@
 void tbr(){
-  gROOT->ProcessLine("TBrowserEx tbr;");
+  gROOT->ProcessLine("new TBrowserEx();");
 }

@@ -128,8 +128,11 @@ public:
   Int_t   GetCurrentHistNumber(){return current_hist_number;}
   void    SetCurrentHistNumber(Int_t num){current_hist_number = num;}
   
-  TBrowserEx() :
-    TBrowser("kobabrowser","ROOT Object Browser Extended",800,1000,0,"CI"),
+  TBrowserEx(const char *name="tbrowserex",
+	     const char *title="ROOT Object Browser Extended",
+	     UInt_t width=800, UInt_t height=1000,
+	     TBrowserImp *extimp=0, Option_t *opt="CI") :
+    TBrowser(name,title,width,height,extimp,opt),
     file_browser(0),
     macro_browser(0),
     hist_browser(0),
