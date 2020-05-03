@@ -14,9 +14,9 @@
 
 void files_to_graphs() {
   std::cout << std::endl << "Macro: files_to_graphs.C" << std::endl;
-  TBrowserEx *gBrowserEx_tmp = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
-  if (gBrowserEx_tmp) {
-    gSystem->cd((gBrowserEx_tmp->GetInitialWorkingDir()).Data());
+  TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
+  if (gBrowserEx) {
+    gSystem->cd((gBrowserEx->GetInitialWorkingDir()).Data());
   }else{return;}
 
   TString dir("."); 

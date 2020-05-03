@@ -13,9 +13,9 @@
 
 void read_techno_ap_mca() {
   std::cout << std::endl << "Macro: read_techno_ap_mca.C" << std::endl;
-  TBrowserEx *gBrowserEx_tmp = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
-  if (gBrowserEx_tmp) {
-    gSystem->cd((gBrowserEx_tmp->GetInitialWorkingDir()).Data());
+  TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
+  if (gBrowserEx) {
+    gSystem->cd((gBrowserEx->GetInitialWorkingDir()).Data());
   }else{return;}
 
   TString dir("."); 

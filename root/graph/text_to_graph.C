@@ -1,8 +1,8 @@
 #if defined(__CINT__) && !defined(__MAKECINT__)
 {
-  TBrowserEx *gBrowserEx_tmp = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
-  if (gBrowserEx_tmp) {
-    gSystem->cd((gBrowserEx_tmp->GetInitialWorkingDir()).Data());
+  TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
+  if (gBrowserEx) {
+    gSystem->cd((gBrowserEx->GetInitialWorkingDir()).Data());
   }else{return;}
   gSystem->CompileMacro(Form("%s/graph/text_to_graph.C", gEnv->GetValue("KOBAMAC_DIR",".")),"k");
   text_to_graph();

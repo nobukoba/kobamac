@@ -1,9 +1,9 @@
 //#if defined(__CINT__) && !defined(__MAKECINT__)
 //{
-//  TBrowserEx *gBrowserEx_tmp = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
+//  TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
 //  TString dir;
-//  if (gBrowserEx_tmp) {
-//    dir = gBrowserEx_tmp->GetInitialWorkingDir();
+//  if (gBrowserEx) {
+//    dir = gBrowserEx->GetInitialWorkingDir();
 //    gSystem->cd(dir.Data());
 //  }else{
 //    return;
@@ -101,9 +101,9 @@ void MergeDir(TDirectory *source, TDirectory *target) {
 
 void add_active_dir(){
   std::cout << std::endl << "Macro: add_active_files.C" << std::endl;
-  TBrowserEx *gBrowserEx_tmp = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
-  if (gBrowserEx_tmp) {
-    gSystem->cd((gBrowserEx_tmp->GetInitialWorkingDir()).Data());
+  TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
+  if (gBrowserEx) {
+    gSystem->cd((gBrowserEx->GetInitialWorkingDir()).Data());
   }else{return;}
   std::cout << "gSystem->pwd(): " << gSystem->pwd() << std::endl;
   
