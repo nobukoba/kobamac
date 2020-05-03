@@ -60,15 +60,20 @@ void ini_kobamac(){
   if (gSystem->AccessPathName("lib/libAllGrutinizer.so")==0) {
     gSystem->Load("lib/libAllGrutinizer.so");
   }
-  
-  /* std::cout << "macro_dir: " << macro_dir << std::endl; */
-  TString cmd = Form("find %s -type d -not -path '*/\\.*' | tr -d '\r' | tr '\n' ':' | sed -e 's/:$//'",gEnv->GetValue("KOBAMAC_DIR","./"));
+
+  TString cmd = Form("echo $(cd %s && pwd)", gEnv->GetValue("KOBAMAC_DIR","."));
   TString s = gSystem->GetFromPipe(cmd.Data());
+  gEnv->SetValue("KOBAMAC_DIR",s.Data());
+  /* std::cout <<"KOBAMAC_DIR: " << gEnv->GetValue("KOBAMAC_DIR","") << std::endl; */
+  
+  cmd = Form("find %s -type d -not -path '*/\\.*' | tr -d '\r' | tr '\n' ':' | sed -e 's/:$//'",gEnv->GetValue("KOBAMAC_DIR","."));
+  s = gSystem->GetFromPipe(cmd.Data());
+
   gROOT->SetMacroPath(s.Data());
-  gROOT->ProcessLine(Form(".L %s/base/TBrowserEx.C+",   gEnv->GetValue("KOBAMAC_DIR","./")));
-  gROOT->ProcessLine(Form(".L %s/base/tbr.C",           gEnv->GetValue("KOBAMAC_DIR","./")));
-  gROOT->ProcessLine(Form(".L %s/base/WaitOneClickX.C", gEnv->GetValue("KOBAMAC_DIR","./")));
-  gROOT->ProcessLine(Form(".L %s/base/WaitOneClickY.C", gEnv->GetValue("KOBAMAC_DIR","./")));
-  gROOT->ProcessLine(Form(".L %s/base/WaitOneClickT.C", gEnv->GetValue("KOBAMAC_DIR","./")));
+  gROOT->ProcessLine(Form(".L %s/root/base/TBrowserEx.C+",   gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/base/tbr.C",           gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/base/WaitOneClickX.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/base/WaitOneClickY.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/base/WaitOneClickT.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   return;
 }
