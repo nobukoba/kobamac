@@ -16,5 +16,12 @@ On the terminal
 $ ls
 $ ... kobamac ...
 $ root
-root [0] .x kobamac/histobrowser/histobrowser.C+
+root [0] gEnv->SetValue("KOBAMAC_DIR","./kobamac");
+root [1] .x kobamac/root/base/ini_kobamac.C
+root [2] TBrowserEx t
+```
+Then the extended TBrowser opens. Instead of "root[2] TBrowserEx t", "root[2] tbr()" also works.
+```
+root [2] tbr()
+
 ```
