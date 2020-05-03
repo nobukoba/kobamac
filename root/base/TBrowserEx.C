@@ -162,7 +162,7 @@ public:
     hist_browser->SetRootDir(); /* For auto delete of histograms in ROOT_Memory */ 
     
     macro_fListTree = macro_browser->GetListTree();
-    macro_browser->AddFSDirectory(gEnv->GetValue("KOBAMAC_DIR","."),"kobamac/root","Add");
+    macro_browser->AddFSDirectory(Form("%s/root",gEnv->GetValue("KOBAMAC_DIR",".")),"kobamac/root","Add");
     macro_browser->ApplyFilter(2);
     SetDNDSourceRecursive(macro_fListTree,macro_fListTree->GetFirstItem(),0);
     TGListTreeItem *ltitem;
