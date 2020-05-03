@@ -16,7 +16,6 @@ On the terminal
 $ ls
 $ ... kobamac ...
 $ root
-root [0] gEnv->SetValue("KOBAMAC_DIR","./kobamac");
 root [1] .x kobamac/root/base/ini_kobamac.C
 root [2] TBrowserEx t
 ```
@@ -30,9 +29,8 @@ If you want to load and execute the macro automatically, you can add the followi
 {
 ...
   /* For kobamac */
-  gEnv->SetValue("KOBAMAC_DIR","<path_to_kobamac>");
   gROOT->ProcessLine(".x <path_to_kobamac>/root/base/ini_kobamac.C");
   gROOT->ProcessLine("TBrowserEx t");
 }
 ```
-Please note that the <path_to_kobamac> part should be matched to the cloned directory, e.g, <path_to_kobamac>=/home/kobayash/ana/kobamac or <path_to_kobamac>=$HOME/ana/kobamac. In .rootlogon.C, only absolute path should work as <path_to_kobamac>. <path_to_kobamac> can include "$HOME" and "~/". If you do not have .rootlogon.C in $HOME, you can copy $KOBAMAC_DIR/root/base/roootlogon_example.C to $HOME.
+Please note that the <path_to_kobamac> part is the kobamac directory you cloned. In .rootlogon.C, only absolute path should work as <path_to_kobamac>. <path_to_kobamac> can include "$HOME" and "~/". If you do not have .rootlogon.C in $HOME, you can copy $KOBAMAC_DIR/root/base/roootlogon_example.C to $HOME.
