@@ -47,6 +47,7 @@ public:
   TGListTree* GetListTree(){return fListTree;}
   TGListTreeItem* GetListLevel(){return fListLevel;}
   void ResetListLevel(){fListLevel = 0;}
+  void SetRootDir(){fRootDir = fListTree->GetFirstItem();}
   TGComboBox* GetDrawOptionPointer(){return fDrawOption;}
   TGPictureButton* GetRefreshButtonPointer(){return fRefreshButton;}
   ClassDef(TGFileBrowserEx,0)
@@ -69,7 +70,7 @@ class TBrowserEx : public TBrowser {
 protected:
   TGFileBrowserEx  *file_browser;
   TGFileBrowserEx  *macro_browser;
-  TGFileBrowser  *hist_browser;
+  TGFileBrowserEx  *hist_browser;
   TGListTree       *macro_fListTree;
   TGListTree       *hist_fListTree;
   /* This causes sedv when .q was input!
@@ -89,7 +90,7 @@ protected:
   TString          sprinter, sprintCmd, sprintOpt;
 public:
   TGFileBrowserEx *GetFileBrowser(){return file_browser;}
-  TGFileBrowser *GetHistBrowser(){return hist_browser;}
+  TGFileBrowserEx *GetHistBrowser(){return hist_browser;}
   TGFileBrowserEx *GetMacroBrowser(){return macro_browser;}
   TGListTree *GetMacroListTree(){return macro_fListTree;}
   TGListTree *GetHistListTree(){return hist_fListTree;}
@@ -108,7 +109,7 @@ public:
   void    SetCurrentHistNumber(Int_t num){current_hist_number = num;}
   
   TBrowserEx() :
-    TBrowser("kobabrowser","ROOT Object Browser Extended",800,1000,0,"FCI"),
+    TBrowser("kobabrowser","ROOT Object Browser Extended",800,1000,0,"CI"),
     /* if option="FCI" is used, segv will occur for
        typing ".q" command for this TBrowserEx and also TBrowser.
        Confirmed with root v5 & v6. */
@@ -140,124 +141,123 @@ public:
     /* Change language to English! TRootCanvas::PrintCanvas() call "lpstat -v".
        This line returns words with wrong ordering in Japanese environment.
     */
-//    gSystem->Setenv("LANG","C");
-//    gROOT->ProcessLine(Form("TBrowserEx *gBrowserEx = (TBrowserEx *)0x%lx;",(ULong_t)this));
-//    initial_working_dir = gSystem->pwd();
-//    
+    gSystem->Setenv("LANG","C");
+    /* To set global parameter */
+    gROOT->ProcessLine(Form("TBrowserEx *gBrowserEx = (TBrowserEx *)0x%lx;",(ULong_t)this));
+    initial_working_dir = gSystem->pwd();
+    
     TString cmd;
-//    cmd.Form("new TGFileBrowserEx(gClient->GetRoot(), (TBrowser *)0x%lx, 200, 500);", (ULong_t)this);
-//    macro_browser = (TGFileBrowserEx*) this->ExecPlugin("Macros", 0, cmd.Data(), 0);
-  
-    //cmd.Form("new TGFileBrowserEx(gClient->GetRoot(), (TBrowser *)0x%lx, 200, 500);", (ULong_t)this);
-    //hist_browser = (TGFileBrowserEx*)  this->ExecPlugin("Histos", 0, cmd.Data(), 0);
-    cmd.Form("new TGFileBrowser(gClient->GetRoot(), (TBrowser *)0x%lx, 200, 500);", (ULong_t)this);
-    hist_browser = (TGFileBrowser*)  this->ExecPlugin("Histos", 0, cmd.Data(), 0);
+    cmd.Form("new TGFileBrowserEx(gClient->GetRoot(), (TBrowser *)0x%lx, 200, 500);", (ULong_t)this);
+    macro_browser = (TGFileBrowserEx*) this->ExecPlugin("Macros", 0, cmd.Data(), 0);
+    
+    cmd.Form("new TGFileBrowserEx(gClient->GetRoot(), (TBrowser *)0x%lx, 200, 500);", (ULong_t)this);
+    hist_browser = (TGFileBrowserEx*)  this->ExecPlugin("Histos", 0, cmd.Data(), 0);
     
     TFolder *fld = new TFolder();
     fld->SetName("fld");
-    fld->AddFolder("ROOT Memory","List of Objects in the gROOT Directory",gDirectory->GetList());
-    fld->AddFolder("ROOT Files","List of Connected ROOT Files", gROOT->GetListOfFiles());
+    fld->AddFolder("ROOT_Memory","List of Objects in the gROOT Directory",gROOT->GetList());
+    fld->AddFolder("ROOT_Files","List of Connected ROOT Files", gROOT->GetListOfFiles());
     fld->Browse(this);
-//    
-//    macro_fListTree = macro_browser->GetListTree();
-//    macro_browser->AddFSDirectory(gEnv->GetValue("KOBAMAC_DIR","."),"kobamac/root","Add");
-//    macro_browser->ApplyFilter(2);
-//    SetDNDSourceRecursive(macro_fListTree,macro_fListTree->GetFirstItem(),0);
-//    TGListTreeItem *ltitem;
-//    ltitem = macro_fListTree->GetFirstItem();
-//    macro_fListTree->DoubleClicked(ltitem,1); ltitem->SetOpen(1);
-//    /*ltitem = macro_fListTree->FindChildByName(ltitem,"fit");
-//      macro_fListTree->DoubleClicked(ltitem,1); ltitem->SetOpen(1);*/
-//    macro_fListTree->ClearViewPort();
-//    macro_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
-//			     "TBrowserEx", this,
-//			     "MyDoubleClicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
-//    macro_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
-//			     "TBrowserEx", this,
-//			     "MyClicked2(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
-//    
-//    /* hist_browser->Add((TFolder *)(((TFolder *)gROOT->GetListOfBrowsables()->FindObject("root"))->FindObject("ROOT Memory"))); */
-//    macro_browser->GetRefreshButtonPointer()->Connect("Clicked()", "TBrowserEx", this, "TBrowserExRefresh()");
-//    hist_browser->GetRefreshButtonPointer()->Connect("Clicked()", "TBrowserEx", this, "TBrowserExRefresh()");
-//    hist_fListTree = hist_browser->GetListTree();
-//    /* hist_fListTree->Disconnect("Clicked(TGListTreeItem *, Int_t)"); */
-//    hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t)",
-//			    "TBrowserEx", this,
-//			    "MyClicked(TGListTreeItem *, Int_t)");
-//    hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
-//			    "TBrowserEx", this,
-//			    "MyClicked2(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
-//    hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
-//			    "TBrowserEx", this,
-//			    "MyClicked3(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
-//    hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
-//			    "TBrowserEx", this,
-//			    "MyDoubleClicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
-//    hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
-//			    "TBrowserEx", this,
-//			    "MyClickedForHistFileBrowser(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
-//   hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
-//			    "TBrowserEx", this,
-//			    "SetCannotMove(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
-//   hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
-//			    "TBrowserEx", this,
-//			    "RemoveAndSetText(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
-//
-//
-//   TQObject::Connect("TCanvas","ProcessedEvent(Int_t,Int_t,Int_t,TObject*)",
-//		      "TBrowserEx", this, "change_canvas(Int_t,Int_t,Int_t,TObject*)");
-//    //this->GetBrowserImp()->GetMainFrame()->Connect("ProcessedEvent(Event_t*)","TBrowserEx", this, "HandleKey(Event_t*)");
-//    TQObject::Connect("TGFrame","ProcessedEvent(Event_t*)","TBrowserEx", this, "HandleButtonsEx(Event_t*)");
-//    TQObject::Connect("TGFrame","ProcessedEvent(Event_t*)","TBrowserEx", this, "HandleKeyEx(Event_t*)");
-//    TQObject::Connect("TGPopupMenu","Activated(Int_t)","TBrowserEx", this, "ProcessActivated(Int_t)");
-//    
-//    Int_t nentry = hist_browser->GetDrawOptionPointer()->GetNumberOfEntries() + 1;
-//    hist_browser->GetDrawOptionPointer()->AddEntry("",    nentry++); /* line 15 */
-//    hist_browser->GetDrawOptionPointer()->AddEntry("*",   nentry++); /* line 16 */
-//    hist_browser->GetDrawOptionPointer()->AddEntry("p",   nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("l",   nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("c",   nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("l*",  nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("c*",  nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("lp",  nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("cp",  nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("a",   nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("a*",  nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("ap",  nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("al",  nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("ac",  nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("al*", nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("ac*", nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("alp", nentry++); /* line 31 */
-//    hist_browser->GetDrawOptionPointer()->AddEntry("acp", nentry++); /* line 32 */
-//    hist_browser->GetDrawOptionPointer()->AddEntry("",    nentry++); /* line 33 */
-//    hist_browser->GetDrawOptionPointer()->AddEntry("same",nentry++); /* line 34 */
-//    hist_browser->GetDrawOptionPointer()->AddEntry("l",   nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("c",   nentry++);
-//    hist_browser->GetDrawOptionPointer()->AddEntry("fc",  nentry++); /* line 37 */
-//    hist_browser->GetDrawOptionPointer()->Select(3,1);
-//    hist_browser->GetDrawOptionPointer()->
-//      GetTextEntry()->SetText(hist_browser->GetDrawOptionPointer()->GetSelectedEntry()->GetTitle());
-//    
-//    add_TGMenuPopup();
-//    customTListMenu();
-//    customTDirectoryFileMenu();
-//    customTFolderMenu();
-//    SetDNDSourceRecursive(hist_fListTree,hist_fListTree->GetFirstItem(),0);
-//    ltitem = hist_fListTree->GetFirstItem();
-//    hist_fListTree->DoubleClicked(ltitem,1); ltitem->SetOpen(1);
-//    ltitem = hist_fListTree->FindChildByName(0,"ROOT_Files");
-//    hist_fListTree->DoubleClicked(ltitem,1); ltitem->SetOpen(1);
-//    /* see https://sft.its.cern.ch/jira/browse/ROOT-9262
-//       for gROOT->GetListOfCleanups()*/
-//    /* This causes segv when typing .q after closing the browserex
-//    gROOT->GetListOfCleanups()->Add(&list_of_active_histos);
-//    gROOT->GetListOfCleanups()->Add(&list_of_ordered_active_histos); */
-//    TTimer::SingleShot(200,"TBrowserEx",this,"TBrowserExRefresh()");
+    hist_browser->SetRootDir(); /* For auto delete of histograms in ROOT_Memory */ 
+    
+    macro_fListTree = macro_browser->GetListTree();
+    macro_browser->AddFSDirectory(gEnv->GetValue("KOBAMAC_DIR","."),"kobamac/root","Add");
+    macro_browser->ApplyFilter(2);
+    SetDNDSourceRecursive(macro_fListTree,macro_fListTree->GetFirstItem(),0);
+    TGListTreeItem *ltitem;
+    ltitem = macro_fListTree->GetFirstItem();
+    macro_fListTree->DoubleClicked(ltitem,1); ltitem->SetOpen(1);
+    /*ltitem = macro_fListTree->FindChildByName(ltitem,"fit");
+      macro_fListTree->DoubleClicked(ltitem,1); ltitem->SetOpen(1);*/
+    macro_fListTree->ClearViewPort();
+    macro_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
+			     "TBrowserEx", this,
+			     "MyDoubleClicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
+    macro_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
+			     "TBrowserEx", this,
+			     "MyClicked2(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
+    
+    /* hist_browser->Add((TFolder *)(((TFolder *)gROOT->GetListOfBrowsables()->FindObject("root"))->FindObject("ROOT Memory"))); */
+    macro_browser->GetRefreshButtonPointer()->Connect("Clicked()", "TBrowserEx", this, "TBrowserExRefresh()");
+    hist_browser->GetRefreshButtonPointer()->Connect("Clicked()", "TBrowserEx", this, "TBrowserExRefresh()");
+    hist_fListTree = hist_browser->GetListTree();
+    /* hist_fListTree->Disconnect("Clicked(TGListTreeItem *, Int_t)"); */
+    hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t)",
+			    "TBrowserEx", this,
+			    "MyClicked(TGListTreeItem *, Int_t)");
+    hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
+			    "TBrowserEx", this,
+			    "MyClicked2(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
+    hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
+			    "TBrowserEx", this,
+			    "MyClicked3(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
+    hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
+			    "TBrowserEx", this,
+			    "MyDoubleClicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
+    hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
+			    "TBrowserEx", this,
+			    "MyClickedForHistFileBrowser(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
+   hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
+			    "TBrowserEx", this,
+			    "SetCannotMove(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
+   hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
+			    "TBrowserEx", this,
+			    "RemoveAndSetText(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
+
+   TQObject::Connect("TCanvas","ProcessedEvent(Int_t,Int_t,Int_t,TObject*)",
+		      "TBrowserEx", this, "change_canvas(Int_t,Int_t,Int_t,TObject*)");
+   /* this->GetBrowserImp()->GetMainFrame()->Connect("ProcessedEvent(Event_t*)","TBrowserEx", this, "HandleKey(Event_t*)"); */
+    TQObject::Connect("TGFrame","ProcessedEvent(Event_t*)","TBrowserEx", this, "HandleButtonsEx(Event_t*)");
+    TQObject::Connect("TGFrame","ProcessedEvent(Event_t*)","TBrowserEx", this, "HandleKeyEx(Event_t*)");
+    TQObject::Connect("TGPopupMenu","Activated(Int_t)","TBrowserEx", this, "ProcessActivated(Int_t)");
+    
+    Int_t nentry = hist_browser->GetDrawOptionPointer()->GetNumberOfEntries() + 1;
+    hist_browser->GetDrawOptionPointer()->AddEntry("",    nentry++); /* line 15 */
+    hist_browser->GetDrawOptionPointer()->AddEntry("*",   nentry++); /* line 16 */
+    hist_browser->GetDrawOptionPointer()->AddEntry("p",   nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("l",   nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("c",   nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("l*",  nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("c*",  nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("lp",  nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("cp",  nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("a",   nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("a*",  nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("ap",  nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("al",  nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("ac",  nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("al*", nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("ac*", nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("alp", nentry++); /* line 31 */
+    hist_browser->GetDrawOptionPointer()->AddEntry("acp", nentry++); /* line 32 */
+    hist_browser->GetDrawOptionPointer()->AddEntry("",    nentry++); /* line 33 */
+    hist_browser->GetDrawOptionPointer()->AddEntry("same",nentry++); /* line 34 */
+    hist_browser->GetDrawOptionPointer()->AddEntry("l",   nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("c",   nentry++);
+    hist_browser->GetDrawOptionPointer()->AddEntry("fc",  nentry++); /* line 37 */
+    hist_browser->GetDrawOptionPointer()->Select(3,1);
+    hist_browser->GetDrawOptionPointer()->
+      GetTextEntry()->SetText(hist_browser->GetDrawOptionPointer()->GetSelectedEntry()->GetTitle());
+    
+    add_TGMenuPopup();
+    customTListMenu();
+    customTDirectoryFileMenu();
+    customTFolderMenu();
+    SetDNDSourceRecursive(hist_fListTree,hist_fListTree->GetFirstItem(),0);
+    ltitem = hist_fListTree->GetFirstItem();
+    hist_fListTree->DoubleClicked(ltitem,1); ltitem->SetOpen(1);
+    ltitem = hist_fListTree->FindChildByName(0,"ROOT_Files");
+    hist_fListTree->DoubleClicked(ltitem,1); ltitem->SetOpen(1);
+    /* see https://sft.its.cern.ch/jira/browse/ROOT-9262
+       for gROOT->GetListOfCleanups()*/
+    /* This causes segv when typing .q after closing the browserex
+    gROOT->GetListOfCleanups()->Add(&list_of_active_histos);
+    gROOT->GetListOfCleanups()->Add(&list_of_ordered_active_histos); */
+    TTimer::SingleShot(200,"TBrowserEx",this,"TBrowserExRefresh()");
   }
   
   ~TBrowserEx(){
-    gROOT->GetListOfBrowsers()->Remove(this);
+    /* gROOT->GetListOfBrowsers()->Remove(this); */
     /*printf("~TBrowserEx");
        gROOT->GetListOfBrowsers()->Remove(this);
        delete hist_browser;
