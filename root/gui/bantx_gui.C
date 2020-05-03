@@ -86,7 +86,7 @@ void bantx_gui(){
     b0 = b1;
     b1 = tmpy;
   }
-  gROOT->ProcessLine(Form(".x %s/cui/bantx.C((TH1*)%p,%f,%f,%f)",
+  gROOT->ProcessLine(Form(".x %s/root/cui/bantx.C((TH1*)%p,%f,%f,%f)",
 			  gEnv->GetValue("KOBAMAC_DIR","."),
 			  hist,par0,b0,b1));
   return;

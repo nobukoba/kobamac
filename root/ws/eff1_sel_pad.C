@@ -18,7 +18,7 @@ void eff1_sel_pad(){
     std::cout << "TH1 histogram was not found in this pad." << std::endl;
     return;
   }
-  gROOT->ProcessLine(Form(".L %s/ws/eff1.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/ws/eff1.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   gROOT->ProcessLine(Form("eff1((TH1*)%p)",hist));
   return;
 }

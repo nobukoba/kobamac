@@ -12,7 +12,7 @@ void set_x_range_for_active(){
   std::istringstream iss(str.Data());
   Double_t par0, par1;
   iss >> par0 >> par1;
-  gROOT->ProcessLine(Form(".L %s/cui/set_x_range.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/cui/set_x_range.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   TIter next(gBrowserEx->GetListOfOrderedActiveHistos());
   TH1 * hist;
   while((hist = (TH1*)next())){

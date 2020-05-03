@@ -1,5 +1,5 @@
 void swap_xy(TH1* hist){
-  gROOT->ProcessLine(Form(".L %s/cui/clone_with_suffix.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/cui/clone_with_suffix.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   TH2 *hout = (TH2*)gROOT->ProcessLine(Form("clone_with_suffix((TH1*)%p,\"%s\");",hist,"_swp"));
   hout->SetTitle(hist->GetTitle());
   hout->Reset();

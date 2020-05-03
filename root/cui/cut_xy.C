@@ -1,5 +1,5 @@
 void cut_xy(TH1* hist, Double_t x1, Double_t x2, Double_t y1, Double_t y2){
-  gROOT->ProcessLine(Form(".L %s/cui/clone_with_suffix.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/cui/clone_with_suffix.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   TH2 *hout = (TH2*)gROOT->ProcessLine(Form("clone_with_suffix((TH1*)%p,\"%s\");",hist,"_cut"));
   hout->Reset();
   hout->SetTitle(hist->GetTitle());

@@ -50,7 +50,7 @@ void banx_gui(){
     y1 = tmpy;
   }
 
-  gROOT->ProcessLine(Form(".x %s/cui/banx.C((TH1*)%p,%f,%f)",
+  gROOT->ProcessLine(Form(".x %s/root/cui/banx.C((TH1*)%p,%f,%f)",
 			  gEnv->GetValue("KOBAMAC_DIR","."),
 			  hist,y0,y1));
   return;

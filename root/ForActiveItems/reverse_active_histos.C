@@ -12,7 +12,7 @@ void reverse_active_histos(){
   if (!gBrowserEx) {return;}
   TIter next(gBrowserEx->GetListOfOrderedActiveHistos());
   TH1 * hist;
-  gROOT->ProcessLine(Form(".L %s/cui/reverse.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/cui/reverse.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   while((hist = (TH1*)next())){
     gROOT->ProcessLine(Form("reverse((TH1*)%p)",hist));
   }

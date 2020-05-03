@@ -62,7 +62,7 @@ void cut_xy_gui(){
     y1 = tmpy;
   }
 
-  gROOT->ProcessLine(Form(".x %s/cui/cut_xy.C((TH1*)%p,%f,%f,%f,%f)",
+  gROOT->ProcessLine(Form(".x %s/root/cui/cut_xy.C((TH1*)%p,%f,%f,%f,%f)",
 			  gEnv->GetValue("KOBAMAC_DIR","."),
 			  hist, x0, x1, y0, y1));
   return;

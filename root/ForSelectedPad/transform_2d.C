@@ -206,7 +206,7 @@ public:
     TH2 *hout = (TH2*)hist->Clone(str_n);
     hout->SetTitle(hist->GetTitle());
     hout->Reset();
-    gROOT->ProcessLine(Form(".L %s/ForSelectedPad/transform_2d_func.C+", gEnv->GetValue("KOBAMAC_DIR",".")));
+    gROOT->ProcessLine(Form(".L %s/root/ForSelectedPad/transform_2d_func.C+", gEnv->GetValue("KOBAMAC_DIR",".")));
     gROOT->ProcessLine(Form("doTransformationTH2D((TH2*)0x%x,(TH2*)0x%x,(TF2*)0x%x,(TF2*)0x%x)",hist,hout,f_xy,g_xy));
     hout->Draw("colz");
     gPad->GetFrame()->SetBit(TBox::kCannotMove);
@@ -250,7 +250,7 @@ public:
     while(gr = (TGraph*)listofpri->FindObject("Graph")){
       gr->Delete();
     }
-    gROOT->ProcessLine(Form(".L %s/ForSelectedPad/transform_2d_func.C+", gEnv->GetValue("KOBAMAC_DIR",".")));
+    gROOT->ProcessLine(Form(".L %s/root/ForSelectedPad/transform_2d_func.C+", gEnv->GetValue("KOBAMAC_DIR",".")));
     gROOT->ProcessLine(Form("drawInverseFunc((TH2*)0x%x,(TH2*)0x%x,(TF2*)0x%x,(TF2*)0x%x)",hist,hist,f_xy,g_xy));
     gPad->GetFrame()->SetBit(TBox::kCannotMove);
     sel_pad->Update();

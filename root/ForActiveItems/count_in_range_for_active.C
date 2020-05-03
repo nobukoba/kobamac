@@ -11,7 +11,7 @@ void count_in_range_for_active(){
   if (!gBrowserEx) {return;}
   TIter next(gBrowserEx->GetListOfOrderedActiveHistos());
   TH1 *hist;
-  gROOT->ProcessLine(Form(".L %s/cui/count_in_range.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/cui/count_in_range.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   while((hist = (TH1 *)next())){
     gROOT->ProcessLine(Form("count_in_range((TH1*)%p)",hist));
   }

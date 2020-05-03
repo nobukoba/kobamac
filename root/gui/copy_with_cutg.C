@@ -156,7 +156,7 @@ void copy_with_cutg(){
   cutg = new TCutG("CUTG",graphical_cut->GetN(),
 		   graphical_cut->GetX(),
 		   graphical_cut->GetY());
-  gROOT->ProcessLine(Form(".L %s/cui/clone_with_suffix.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/cui/clone_with_suffix.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   TH2 *hout = (TH2*)gROOT->ProcessLine(Form("clone_with_suffix((TH1*)%p,\"%s\");",hist,"_cut"));
   Double_t xx, yy;
   for (Int_t i = 0; i <= hist->GetNbinsX()+1; i++) {

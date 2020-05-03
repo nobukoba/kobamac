@@ -1,5 +1,5 @@
 TH1* sub(TH1 *hist, TH1 *hist2, Double_t c1, Double_t c2){
-  gROOT->ProcessLine(Form(".L %s/cui/clone_with_suffix.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/cui/clone_with_suffix.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   TH1 *hsub = (TH1*)gROOT->ProcessLine(Form("clone_with_suffix((TH1*)%p,\"%s\");",hist,"_sub"));
   hsub->SetTitle(hist->GetTitle());
   hsub->Scale(c1);

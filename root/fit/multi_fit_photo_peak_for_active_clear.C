@@ -11,7 +11,7 @@ void multi_fit_photo_peak_for_active_clear(){
   TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
   if (!gBrowserEx) {return;}
   TGListTree *hist_fListTree = gBrowserEx->GetHistListTree();
-  gROOT->ProcessLine(Form(".L %s/fit/fit_photo_peak_clear.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/fit/fit_photo_peak_clear.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   TIter next(gBrowserEx->GetHistListTreeActiveHistos());
   TObjString* objstr;
   while((objstr = (TObjString*)next())){

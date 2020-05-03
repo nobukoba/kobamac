@@ -17,7 +17,7 @@ void scale_active_histos(){
   iss >> par;
   TIter next(gBrowserEx->GetListOfOrderedActiveHistos());
   TH1 *hist;
-  gROOT->ProcessLine(Form(".L %s/cui/scale.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/cui/scale.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   while((hist = (TH1 *)next())){
     gROOT->ProcessLine(Form("scale((TH1*)%p,%f)",hist,par));
   }
