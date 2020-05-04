@@ -2,10 +2,10 @@
 #include "TEnv.h"
 #include "TSystem.h"
 
-void ini_kobamac(){
+void init_kobamac(){
   TString str = __FILE__; /* preprocessor command __FILE__ returns the file name of the file itself */ 
   /* std::cout << __FILE__ << std::endl; */
-  str.Resize(str.Length()-13); /* Remove the string "ini_kobamac.C" at the last */
+  str.Resize(str.Length()-14); /* Remove the string "init_kobamac.C" at the last */
   TString cmd = Form("echo $(cd %s && pwd)", str.Data());
   str = gSystem->GetFromPipe(cmd.Data());
   str.Resize(str.Length()-10); /* Remove the string "/root/base" at the last */
@@ -16,10 +16,10 @@ void ini_kobamac(){
   str = gSystem->GetFromPipe(cmd.Data());
   gROOT->SetMacroPath(Form("%s:%s", gROOT->GetMacroPath(), str.Data()));
   gROOT->ProcessLine(Form(".L %s/root/base/TBrowserEx.C+",   gEnv->GetValue("KOBAMAC_DIR",".")));
-  gROOT->ProcessLine("TBrowserEx *gBrowserEx = 0;");
   gROOT->ProcessLine(Form(".L %s/root/base/tbr.C",           gEnv->GetValue("KOBAMAC_DIR",".")));
   gROOT->ProcessLine(Form(".L %s/root/base/WaitOneClickX.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   gROOT->ProcessLine(Form(".L %s/root/base/WaitOneClickY.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   gROOT->ProcessLine(Form(".L %s/root/base/WaitOneClickT.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine("TBrowserEx *gBrowserEx = 0;");
   return;
 }
