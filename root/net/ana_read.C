@@ -15,7 +15,9 @@ void ana_read(){
   Info("fastMergeServer","Receive input from client %d for %s",clientId,filename.Data());
   TMemFile* oldfile = (TMemFile*) gROOT->GetListOfFiles()->FindObject(filename.Data());
   if (oldfile) {
-    if (gROOT->ProcessLine("gBrowserEx; 2> /dev/null")) {
+    /* Does not work in ROOT v6.
+       if (gROOT->ProcessLine("gBrowserEx; 2> /dev/null")) { */
+    if (gROOT->ProcessLine("gBrowserEx;")) {
       gROOT->ProcessLine("gBrowserEx->ResetActBrowser();");
     }
     gROOT->GetListOfFiles()->Remove(oldfile);
