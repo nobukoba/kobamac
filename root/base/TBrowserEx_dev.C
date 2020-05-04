@@ -4,7 +4,6 @@
   Facility: Research Center for Nuclear Physics, University of Osaka
   Created:  03-MAY-2020 by Nobu Kobayashi
   Version 1.00 03-MAY-2020 by Nobu Kobayashi
-  Version 1.01 05-MAY-2020 by Nobu Kobayashi
 
   03-MAY-2020
 
@@ -33,15 +32,6 @@
   causes segv when typing .q after closing the TBrowserEx.  See
   https://sft.its.cern.ch/jira/browse/ROOT-9262 for
   gROOT->GetListOfCleanups().
-
-  05-MAY-2020
-  
-  To transfer histograms by TSocket, the ResetActBrowser() function
-  was added. When remove histograms, the fActBrowser pointer in
-  TRootBrowser.cxx should be the same as the hist_browser pointer.
-  Unused pointer "file_browser" was removed from the code.  The order
-  of lines are rearranged in the constructer (ctor) of TBrowserEx.
-  
 */
 
 #include <iostream>
