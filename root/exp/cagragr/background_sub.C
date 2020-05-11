@@ -10,9 +10,9 @@ void background_sub(){
   
   TH2 *histOut = (TH2*)hd->Clone("histOut");
   //histOut->Reset();
-  histOut->Add(hb,-1);
-  histOut->Draw("colz");
-  double weight = 0.1;
+  double weight = 0.113;
+  //histOut->Add(hb,-0.113);
+  //histOut->Draw("colz");
   int r = 10;
   int limit_m = 1*3;
   int limit_n = 1.8*3;
