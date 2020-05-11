@@ -44,8 +44,8 @@ void banty(TH1* hist, Double_t par0, Double_t par1, Double_t par2){
   
   for (Int_t i = 1; i <= hout2->GetNbinsX(); i++) {
     for (Int_t j = 0; j <= hout2->GetNbinsY()+1; j++) {
-      hout->Fill(hout2->GetYaxis()->GetBinCenter(j),
-		 hout2->GetBinContent(i,j));
+      hout->SetBinContent(j,hout->GetBinContent(j)
+			  +hout2->GetBinContent(i,j));
     }
   }
   hout->Draw();

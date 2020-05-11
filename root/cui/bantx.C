@@ -44,8 +44,8 @@ void bantx(TH1* hist, Double_t par0, Double_t par1, Double_t par2){
 
   for (Int_t i = 0; i <= hout2->GetNbinsX()+1; i++) {
     for (Int_t j = 1; j <= hout2->GetNbinsY(); j++) {
-      hout->Fill(hout2->GetXaxis()->GetBinCenter(i),
-		 hout2->GetBinContent(i,j));
+      hout->SetBinContent(i,hout->GetBinContent(i)
+			  +hout2->GetBinContent(i,j));
     }
   }
   hout->SetEntries(hout2->GetEntries());
