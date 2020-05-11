@@ -12,5 +12,5 @@ void scale_sel_pad(){
   iss >> par;
 
   gROOT->ProcessLine(Form(".L %s/root/cui/scale.C", gEnv->GetValue("KOBAMAC_DIR",".")));
-  gROOT->ProcessLine(Form("scale((TH1*)%p)", hist));
+  gROOT->ProcessLine(Form("scale((TH1*)%p,%f)", hist,par));
 }
