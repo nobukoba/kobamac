@@ -14,8 +14,8 @@ void proy(TH1* hist){
   save->cd();
   for (Int_t i = 1; i <= hist->GetNbinsX(); i++) {
     for (Int_t j = 0; j <= hist->GetNbinsY()+1; j++) {
-      hout->Fill(hist->GetYaxis()->GetBinCenter(j),
-		 hist->GetBinContent(i,j));
+      hout->SetBinContent(j,hout->GetBinContent(j)
+			  +hist->GetBinContent(i,j));
     }
   }
   hout->SetEntries(hist->GetEntries());

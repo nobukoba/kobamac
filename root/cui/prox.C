@@ -14,8 +14,8 @@ void prox(TH1* hist){
   save->cd();
   for (Int_t i = 0; i <= hist->GetNbinsX()+1; i++) {
     for (Int_t j = 1; j <= hist->GetNbinsY(); j++) {
-      hout->Fill(hist->GetXaxis()->GetBinCenter(i),
-		 hist->GetBinContent(i,j));
+      hout->SetBinContent(i,hout->GetBinContent(i)
+			  +hist->GetBinContent(i,j));
     }
   }
   hout->SetEntries(hist->GetEntries());
