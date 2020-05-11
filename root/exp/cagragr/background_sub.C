@@ -14,8 +14,8 @@ void background_sub(){
   //histOut->Add(hb,-0.113);
   //histOut->Draw("colz");
   int r = 10;
-  int limit_m = 1*3;
-  int limit_n = 1.8*3;
+  int limit_m = 3;
+  int limit_n = 5;
   for (int i = 1; i <= hd->GetNbinsX(); i++){
     for (int j = 1; j <= hd->GetNbinsY(); j++){
       for (int k = 0; k < r; k++){
