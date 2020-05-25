@@ -2,7 +2,9 @@
 #include "TH2.h"
 
 void background_sub(){
-  TFile *f = new TFile("hist_MakeClover_Nobu_20200427_toff2_2132_2158_th.root");
+  /*TFile *f = new TFile("hist_MakeClover_Nobu_20200427_toff2_2132_2158_th.root");*/
+  TFile *f = new TFile("output/date20200525/hist_MakeClover_Nobu_20200525_cpu8_mem8_chk6_run2132_2158_th.root");
+  TFile *fout = new TFile("output/date20200525/hist_MakeClover_Nobu_20200525_cpu8_mem8_chk6_run2132_2158_th_bgsub.root","RECREATE");
   TH2 *hd = (TH2*)f->Get("Nobu/EgEx_rgr_tg_thc");
   TH2 *hb = (TH2*)f->Get("Nobu/EgEx_rgr_bg_thc");
   hd->Draw("colz");
@@ -40,5 +42,7 @@ void background_sub(){
     }  
   }
   histOut->Draw("colz");
+  fout->Write();
+  
   return;  
 }

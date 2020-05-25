@@ -51,7 +51,9 @@ void cagra_nim_coin_208pb_prox() {
   gROOT->ForceStyle(); 
   //TFile *f = new TFile("date20190727_merged2_w_bgsub.root");
   //TH2 *hcln = (TH2*)f->Get("histOut");
-  TFile *f = new TFile("date20200428_w_bgsub.root");
+  //TFile *f = new TFile("date20200428_w_bgsub.root");
+  TFile *f = new TFile("output/date20200525/hist_MakeClover_Nobu_20200525_cpu8_mem8_chk6_run2132_2158_th_bgsub.root");
+
   TH2 *hcln = (TH2*)f->Get("histOut");
   TH2 *hcln2 = (TH2*)hcln->Clone("hcln2");
   TGraph *gr = new TGraph();
