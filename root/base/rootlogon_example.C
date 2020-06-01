@@ -53,8 +53,8 @@
   /*gROOT->ForceStyle();*/
 
   /* For grutinizer */  
-  if (gSystem->AccessPathName("$HOME/GRUTinizer/lib/libAllGrutinizer.so")==0) {
-    gSystem->Load("$HOME/GRUTinizer/lib/libAllGrutinizer.so");
+  if (gSystem->AccessPathName("/home/kobayash/GRUTinizer/lib/libAllGrutinizer.so")==0) {
+    gSystem->Load("/home/kobayash/GRUTinizer/lib/libAllGrutinizer.so");
   }
 
   /* For kobamac */
