@@ -178,12 +178,9 @@ public:
     cmd.Form("new TGFileBrowserEx(gClient->GetRoot(), (TBrowser *)0x%lx, 200, 500);", (ULong_t)this);
     hist_browser = (TGFileBrowserEx*)  this->ExecPlugin("Histos", 0, cmd.Data(), 0);
 
-    std::cout << "gEnv->GetValue(\"KOBAMAC_DIR\",\".\")" << gEnv->GetValue("KOBAMAC_DIR",".") << std::endl;
     macro_browser->AddFSDirectory(Form("%s/root",gEnv->GetValue("KOBAMAC_DIR",".")),"kobamac/root","Add");
     macro_browser->ApplyFilter(2);
     macro_fListTree = macro_browser->GetListTree();
-    std::cout << "macro_fListTree: " << macro_fListTree << std::endl;
-    std::cout << "macro_fListTree->GetFirstItem(): " << macro_fListTree->GetFirstItem() << std::endl;    
     /* SetDNDSourceRecursive(macro_fListTree,macro_fListTree->GetFirstItem(),0); */
 
     TGListTreeItem *ltitem = macro_fListTree->GetFirstItem();
