@@ -52,7 +52,7 @@
   gStyle->SetTitleFontSize(0.04);  
   /*gROOT->ForceStyle();*/
 
-  /* For grutinizer */  
+  /* For grutinizer (full path w/o $HOME or ~/) */  
   if (gSystem->AccessPathName("/home/kobayash/GRUTinizer/lib/libAllGrutinizer.so")==0) {
     gSystem->Load("/home/kobayash/GRUTinizer/lib/libAllGrutinizer.so");
   }

@@ -171,17 +171,21 @@ public:
     customTListMenu();
     customTDirectoryFileMenu();
     customTFolderMenu();
-    
+
     TString cmd;
     cmd.Form("new TGFileBrowserEx(gClient->GetRoot(), (TBrowser *)0x%lx, 200, 500);", (ULong_t)this);
     macro_browser = (TGFileBrowserEx*) this->ExecPlugin("Macros", 0, cmd.Data(), 0);
     cmd.Form("new TGFileBrowserEx(gClient->GetRoot(), (TBrowser *)0x%lx, 200, 500);", (ULong_t)this);
     hist_browser = (TGFileBrowserEx*)  this->ExecPlugin("Histos", 0, cmd.Data(), 0);
-    
+
+    std::cout << "gEnv->GetValue(\"KOBAMAC_DIR\",\".\")" << gEnv->GetValue("KOBAMAC_DIR",".") << std::endl;
     macro_browser->AddFSDirectory(Form("%s/root",gEnv->GetValue("KOBAMAC_DIR",".")),"kobamac/root","Add");
     macro_browser->ApplyFilter(2);
     macro_fListTree = macro_browser->GetListTree();
-    SetDNDSourceRecursive(macro_fListTree,macro_fListTree->GetFirstItem(),0);
+    std::cout << "macro_fListTree: " << macro_fListTree << std::endl;
+    std::cout << "macro_fListTree->GetFirstItem(): " << macro_fListTree->GetFirstItem() << std::endl;    
+    /* SetDNDSourceRecursive(macro_fListTree,macro_fListTree->GetFirstItem(),0); */
+
     TGListTreeItem *ltitem = macro_fListTree->GetFirstItem();
     macro_fListTree->DoubleClicked(ltitem,1); ltitem->SetOpen(1);
     /*ltitem = macro_fListTree->FindChildByName(ltitem,"fit");
@@ -194,7 +198,6 @@ public:
 			     "TBrowserEx", this,
 			     "MyClicked2(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
     macro_browser->GetRefreshButtonPointer()->Connect("Clicked()", "TBrowserEx", this, "TBrowserExRefresh()");
-    
     TFolder *fld = new TFolder();
     fld->SetName("fld");
     fld->AddFolder("ROOT_Memory","List of Objects in the gROOT Directory",gROOT->GetList());
@@ -202,8 +205,9 @@ public:
     ResetActBrowser();
     fld->Browse(this);
     hist_browser->SetRootDir(); /* For auto delete of histograms in ROOT_Memory */ 
+    
     hist_fListTree = hist_browser->GetListTree();
-    SetDNDSourceRecursive(hist_fListTree,hist_fListTree->GetFirstItem(),0);
+    /*SetDNDSourceRecursive(hist_fListTree,hist_fListTree->GetFirstItem(),0);*/
     hist_browser->GetRefreshButtonPointer()->Connect("Clicked()", "TBrowserEx", this, "TBrowserExRefresh()");
     Int_t nentry = hist_browser->GetDrawOptionPointer()->GetNumberOfEntries() + 1;
     hist_browser->GetDrawOptionPointer()->AddEntry("",    nentry++); /* line 15 */
@@ -255,9 +259,9 @@ public:
     hist_fListTree->Connect("Clicked(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)",
 			    "TBrowserEx", this,
 			    "RemoveAndSetText(TGListTreeItem *, Int_t, UInt_t, Int_t, Int_t)");
-    
     ltitem = hist_fListTree->GetFirstItem();
-    hist_fListTree->DoubleClicked(ltitem,1); ltitem->SetOpen(1);
+    hist_fListTree->DoubleClicked(ltitem,1);
+    ltitem->SetOpen(1);
     ltitem = hist_fListTree->FindChildByName(0,"ROOT_Files");
     hist_fListTree->DoubleClicked(ltitem,1); ltitem->SetOpen(1);
     TTimer::SingleShot(200,"TBrowserEx",this,"TBrowserExRefresh()");
@@ -809,9 +813,9 @@ public:
   void SetDNDSourceRecursive(TGListTree* lt, TGListTreeItem* item, Bool_t bl){
     TGListTreeItem* cur_item = item;
     while (cur_item){
+        printf("here cur_item %p\n",cur_item);
+        printf("here cur_item %s\n",cur_item->GetText());
       /*
-        printf("here cur_item %p",cur_item);
-        printf("here cur_item %s",cur_item->GetText());
         TClass *cl = TClass::GetClass(((TObject*)(cur_item->GetUserData()))->ClassName());
         if (cl->InheritsFrom("TKey")) {
         cl = TClass::GetClass(((TKey*)(cur_item->GetUserData()))->GetClassName());
