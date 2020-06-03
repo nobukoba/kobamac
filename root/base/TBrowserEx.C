@@ -770,7 +770,7 @@ public:
     else
       printer = StrDup(sprinter);
     if (sprintCmd == "")
-      printCmd = StrDup(gEnv->GetValue("Print.Command", ""));
+      printCmd = StrDup(gEnv->GetValue("Print.Command", "lpr -P%p"));
     else
       printCmd = StrDup(sprintCmd);
     sprintOpt = option;
@@ -786,7 +786,7 @@ public:
       TString fn = "rootprint";
       FILE *f = gSystem->TempFileName(fn, gEnv->GetValue("Print.Directory", gSystem->TempDirectory()));
       if (f) fclose(f);
-      TString filetype = gEnv->GetValue("Print.FileType", "pdf");
+      TString filetype = gEnv->GetValue("Print.FileType", "ps");
       fn += TString::Format(".%s",filetype.Data());
       gPad->GetCanvas()->Print(fn.Data(), option);
       TString cmd = sprintCmd;
