@@ -51,11 +51,12 @@ void cagra_nim_coin_208pb_prox_2col() {
   gROOT->ForceStyle(); 
   //TFile *f = new TFile("date20190727_merged2_w_bgsub.root");
   //TH2 *hcln = (TH2*)f->Get("histOut");
-  TFile *f = new TFile("output/date20200525/hist_MakeClover_Nobu_20200525_cpu8_mem8_chk6_run2132_2158_th_bgsub.root");
-  TH2 *hcln = (TH2*)f->Get("histOut");
+  TFile *f = new TFile("/home/kobayash/GRUTinizer/output/date20200603/hist_MakeClover_Nobu_20200603_e_above_2132_2158_bgsub.root");
+  //TH2 *hcln = (TH2*)f->Get("histOut");
+  TH2 *hcln = (TH2*)f->Get("EgEx_rgr_tg_thc_cln1");
   TH2 *hcln2 = (TH2*)hcln->Clone("hcln2");
   TGraph *gr = new TGraph();
-  Double_t hwid = 0.1;
+  Double_t hwid = 0.05;
   gr->SetPoint(0, 0.,  hwid);
   gr->SetPoint(1, 0., -hwid);
   gr->SetPoint(2,10.,10.-hwid);
