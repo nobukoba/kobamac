@@ -1,0 +1,155 @@
+***************************************** 
+* A macro to rebin in y axis
+*
+* Usage: exe <macro directory>/rebin_y.kumac HID_IN HID_OUT NBINS
+*
+* After execution of this macro, new histogram
+* with hid = 9999 is created in the //PAWC memory.
+* 
+* For your information,
+*    $HEXIST(id)  .................  1 if histogram ID exists or 0 otherwise
+*    $HINFO(id,'1DHISTO')  ........  1 if ID is a 1D histogram or 0 otherwise
+*    $HINFO(id,'2DHISTO')  ........  1 if ID is a 2D histogram or 0 otherwise
+*    $HINFO(id,'XBINS')  ..........  Number of bins in X direction
+*    $HINFO(id,'XMIN')  ...........  Lower histogram limit in X direction
+*    $HINFO(id,'XMAX')  ...........  Upper histogram limit in X direction
+*    $HINFO(id,'YBINS')  ..........  Number of bins in Y direction
+*    $HINFO(id,'YMIN')  ...........  Lower histogram limit in Y direction
+*    $HINFO(id,'YMAX')  ...........  Upper histogram limit in Y direction
+*    $VEXIST(VNAME)  ..............  Index of vector VNAME
+*                                    (1..$NUMVEC or 0 if VNAME does not exist)
+* Also see http://paw.web.cern.ch/paw/reference_manual/KUIP.html#K:FUNCTI 
+* 27 Aug., 2019 Nobu Kobayashi
+*****************************************
+
+ macro main [hid1] [hid2] [nbins]
+   if (([hid1] .eq. '') .or. ([hid2] .eq. '') .or. ([nbins] .eq. '')) then
+     mess
+     mess Usage: exe <macro directory>/rebin_y.kumac HID_IN HID_OUT NBINS
+     mess
+     exitm
+   endif
+   
+* If the histogram with hid is not loaded in a memory,
+* load it.
+   if ($hexist([hid1]) .eq. 0) then
+     hrin [hid1]
+   endif
+* If the histogram is not 2D, terminate this macro.
+   if ($hinfo([hid1],'2DHISTO') .ne. 1) then
+     mess The histogram is not 1D.
+     exitm
+   endif
+   
+* Delete temporary vectors created in the previous execution of this macro
+   if ($vexist(con_vec) .eq. 1) then
+     vec/del con_vec
+   endif
+   if ($vexist(err_vec) .eq. 1) then
+     vec/del err_vec
+   endif
+   
+   xmin   = $hinfo([hid1],'XMIN')
+   xmax   = $hinfo([hid1],'XMAX')
+   xbins  = $hinfo([hid1],'XBINS')
+   dx     = (([xmax]) - ([xmin]))/([xbins])
+   ymin   = $hinfo([hid1],'YMIN')
+   ymax   = $hinfo([hid1],'YMAX')
+   ybins  = $hinfo([hid1],'YBINS')
+   dy     = (([ymax]) - ([ymin]))/([ybins])
+   dy2    = (([ymax]) - ([ymin]))/([nbins])
+* Create temporary vectors to store the contents of the histogram
+   vec/cre con_vec([xbins],[ybins]) r
+   vec/cre err_vec([xbins],[ybins]) r
+   get/con [hid1] con_vec
+   get/err [hid1] err_vec
+   
+* Remove the histogram with hid = hid2, if it exists
+   if ($hexist([hid2]) .eq. 0) then
+     hrin [hid2]
+   endif
+   if ($hexist([hid2])) then
+     mess Histogram HID: [hid2] already exists
+     mess Exit the macro
+     exitm
+   endif
+   2d [hid2] $HTITLE([hid1]) [xbins] [xmin] [xmax] [nbins] [ymin] [ymax]
+   
+   do i = 1, [xbins]
+     j1 = 1
+     do j2 = 1, [nbins]
+       ylow2 = ([j2] - 1) * ([dy2]) + ([ymin])
+       yup2  = ([j2]) * ([dy2]) + ([ymin])
+       sum_val = 0
+       sum_err = 0
+       while (1 .eq. 1) do
+	 ylow1 = ([j1] - 1) * ([dy1]) + ([ymin])
+	 yup1  = ([j1]) * ([dy1]) + ([ymin])
+	 con = con_vec([i],[j1])
+	 err = err_vec([i],[j1])
+	 if ([yup1] .gt. [yup2]) then
+	   yfac = 1 - ((([yup1])-([yup2])) / [dy1])
+	   if ([ylow1] .lt. [ylow2]) then
+	     yfac = [yfac] - ((([ylow2])-([ylow1])) / [dy1])
+	   endif
+	   sum_val = [sum_val] + [con]
+	   sum_err = $sigma(([sum_err])**2 + )
+	   breakl
+	 endif
+	 
+	 j1 = j1 + 1
+       endwhile
+     enddo
+   enddo
+   
+* do i = 1, [xbins]
+*   do j = 1, [ybins]
+*      con = con_vec([i],[j])
+*      err = err_vec([i],[j])
+*      xlow = ([i] - 1) * ([dx]) + ([xmin])
+*      xup  = ([i]) * ([dx]) + ([xmin])
+*      ylow = ([j] - 1) * ([dy]) + ([ymin])
+*      yup  = ([j]) * ([dy]) + ([ymin])
+*      * If x1 or x2 (y1 or y2) is located in-between the upper and lower
+*      * edges of the bin, the xfac (yfac) is calculated to be a
+*      * proper ratio dividing a bin
+*      xfac = 1
+*      if ([x1] .gt. [xup]) then
+*        xfac = 0
+*      else
+*        if ([x1] .gt. [xlow]) then
+*           xfac = [xfac] - ((([x1])-([xlow])) / [dx])
+*        endif
+*      endif
+*      if ([x2] .lt. [xlow]) then
+*        xfac = 0
+*      else
+*        if ([x2] .lt. [xup]) then
+*           xfac = [xfac] - ((([xup])-([x2])) / [dx])
+*        endif
+*      endif
+*      yfac = 1
+*      if ([y1] .gt. [yup]) then
+*        yfac = 0
+*      else
+*        if ([y1] .gt. [ylow]) then
+*           yfac = [yfac] - ((([y1])-([ylow])) / [dy])
+*        endif
+*      endif
+*      if ([y2] .lt. [ylow]) then
+*        yfac = 0
+*      else
+*        if ([y2] .lt. [yup]) then
+*           yfac = [yfac] - ((([yup])-([y2])) / [dy])
+*        endif
+*      endif
+*      con = [con] * [xfac] * [yfac]
+*      err = [err] * [xfac] * [yfac]
+*      vec/input con_vec([i],[j]) [con] 
+*      vec/input err_vec([i],[j]) [err] 
+*    enddo
+*  enddo
+*  put/con 9999 con_vec
+*  put/err 9999 err_vec
+*  hi/pl 9999 colz
+return
