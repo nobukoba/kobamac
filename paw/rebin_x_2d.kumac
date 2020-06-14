@@ -1,7 +1,7 @@
 ***************************************** 
-* A macro to rebin in y axis
+* A macro to rebin in x axis
 *
-* Usage: exe <macro directory>/rebin_y_2d.kumac HID_IN HID_OUT NBINS
+* Usage: exe <macro directory>/rebin_x_2d.kumac HID_IN HID_OUT NBINS
 *
 * After execution of this macro, new histogram
 * with id of HID_OUT is created in the //PAWC memory.
@@ -27,7 +27,7 @@
  macro main [hid1] [hid2] [nbins]
    if (([hid1] .eq. '') .or. ([hid2] .eq. '') .or. ([nbins] .eq. '')) then
      mess
-     mess Usage: exe <macro directory>/rebin_y_2d.kumac HID_IN HID_OUT NBINS
+     mess Usage: exe <macro directory>/rebin_x_2d.kumac HID_IN HID_OUT NBINS
      mess
      exitm
    endif
@@ -59,17 +59,17 @@
    
    xmin   = $hinfo([hid1],'XMIN')
    xmax   = $hinfo([hid1],'XMAX')
-   xbins  = $hinfo([hid1],'XBINS')
-   dx     = (([xmax]) - ([xmin]))/([xbins])
+   xbins1 = $hinfo([hid1],'XBINS')
+   dx1    = (([xmax]) - ([xmin]))/([xbins1])
+   xbins2 = [nbins]
+   dx2    = (([xmax]) - ([xmin]))/([xbins2])
    ymin   = $hinfo([hid1],'YMIN')
    ymax   = $hinfo([hid1],'YMAX')
-   ybins1 = $hinfo([hid1],'YBINS')
-   dy1    = (([ymax]) - ([ymin]))/([ybins1])
-   ybins2 = [nbins]
-   dy2    = (([ymax]) - ([ymin]))/([ybins2])
+   ybins  = $hinfo([hid1],'YBINS')
+   dy     = (([ymax]) - ([ymin]))/([ybins])
 * Create temporary vectors to store the contents of the histogram
-   vec/cre con_vec1([xbins],[ybins1]) r
-   vec/cre err_vec1([xbins],[ybins1]) r
+   vec/cre con_vec1([xbins1],[ybins]) r
+   vec/cre err_vec1([xbins1],[ybins]) r
    get/con [hid1] con_vec1
    get/err [hid1] err_vec1
    
@@ -82,43 +82,43 @@
      mess Remove HID: [hid2]
    endif
    
-   vec/cre con_vec2([xbins],[ybins2]) r
-   vec/cre err_vec2([xbins],[ybins2]) r
-   do i = 1, [xbins]
-     j2_cur = 1
-     do j1 = 1, [ybins1]
-       ylow1 = ([j1] - 1) * ([dy1]) + ([ymin])
-       yup1  = ([j1]) * ([dy1]) + ([ymin])
-       con1 = con_vec1([i],[j1])
-       err1 = err_vec1([i],[j1])
-       do j2 = [j2_cur], [ybins2]
-	 ylow2 = ([j2] - 1) * ([dy2]) + ([ymin])
-	 yup2  = ([j2]) * ([dy2]) + ([ymin])
+   vec/cre con_vec2([xbins2],[ybins]) r
+   vec/cre err_vec2([xbins2],[ybins]) r
+   do j = 1, [ybins]
+     i2_cur = 1
+     do i1 = 1, [xbins1]
+       xlow1 = ([i1] - 1) * ([dx1]) + ([xmin])
+       xup1  = ([i1]) * ([dx1]) + ([xmin])
+       con1 = con_vec1([i1],[j])
+       err1 = err_vec1([i1],[j])
+       do i2 = [i2_cur], [xbins2]
+	 xlow2 = ([i2] - 1) * ([dx2]) + ([xmin])
+	 xup2  = ([i2]) * ([dx2]) + ([xmin])
 	 fac = 1
-	 if ([ylow1] .lt. [ylow2]) then
-	   fac = ([fac]) - ((([ylow2])-([ylow1])) / [dy1])
+	 if ([xlow1] .lt. [xlow2]) then
+	   fac = ([fac]) - ((([xlow2])-([xlow1])) / [dx1])
 	 endif
-	 if ([yup1] .gt. [yup2]) then
-	   fac = ([fac]) - ((([yup1])-([yup2])) / [dy1])
+	 if ([xup1] .gt. [xup2]) then
+	   fac = ([fac]) - ((([xup1])-([xup2])) / [dx1])
 	 endif
-	 if (([ylow1] .eq. [yup2]) .or. ([yup1] .eq. [ylow2])) then
+	 if (([xlow1] .eq. [xup2]) .or. ([xup1] .eq. [xlow2])) then
 	   fac = 0
 	 endif
-* mess i j1 j2 fac [i] [j1] [j2] [fac]
-	 con2 = con_vec2([i],[j2])
-	 err2 = err_vec2([i],[j2])
+* mess i1 i2 j fac [i1] [i2] [j] [fac]
+	 con2 = con_vec2([i2],[j])
+	 err2 = err_vec2([i2],[j])
 	 sum_con = ([con2]) + ([fac])*([con1])
 	 sum_err = $sigma(sqrt(([err2])**2 + (([fac])*([err1]))**2))
-	 vec/input con_vec2([i],[j2]) [sum_con]
-	 vec/input err_vec2([i],[j2]) [sum_err]
-	 if ([yup1] .le. [yup2]) then
-	   j2_cur = [j2]
+	 vec/input con_vec2([i2],[j]) [sum_con]
+	 vec/input err_vec2([i2],[j]) [sum_err]
+	 if ([xup1] .le. [xup2]) then
+	   i2_cur = [i2]
 	   breakl
 	 endif
        enddo
      enddo
    enddo
-   2d [hid2] $HTITLE([hid1]) [xbins] [xmin] [xmax] [ybins2] [ymin] [ymax]
+   2d [hid2] $HTITLE([hid1]) [xbins2] [xmin] [xmax] [ybins] [ymin] [ymax]
    put/con [hid2] con_vec2
    put/err [hid2] err_vec2
  return
