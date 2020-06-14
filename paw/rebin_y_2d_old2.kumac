@@ -1,0 +1,138 @@
+***************************************** 
+* A macro to rebin in y axis
+*
+* Usage: exe <macro directory>/rebin_y.kumac HID_IN HID_OUT NBINS
+*
+* After execution of this macro, new histogram
+* with hid = 9999 is created in the //PAWC memory.
+* 
+* For your information,
+*    $HEXIST(id)  .................  1 if histogram ID exists or 0 otherwise
+*    $HINFO(id,'1DHISTO')  ........  1 if ID is a 1D histogram or 0 otherwise
+*    $HINFO(id,'2DHISTO')  ........  1 if ID is a 2D histogram or 0 otherwise
+*    $HINFO(id,'XBINS')  ..........  Number of bins in X direction
+*    $HINFO(id,'XMIN')  ...........  Lower histogram limit in X direction
+*    $HINFO(id,'XMAX')  ...........  Upper histogram limit in X direction
+*    $HINFO(id,'YBINS')  ..........  Number of bins in Y direction
+*    $HINFO(id,'YMIN')  ...........  Lower histogram limit in Y direction
+*    $HINFO(id,'YMAX')  ...........  Upper histogram limit in Y direction
+*    $VEXIST(VNAME)  ..............  Index of vector VNAME
+*                                    (1..$NUMVEC or 0 if VNAME does not exist)
+* Also see http://paw.web.cern.ch/paw/reference_manual/KUIP.html#K:FUNCTI 
+* 27 Aug., 2019 Nobu Kobayashi
+*****************************************
+ 
+ macro main [hid1] [hid2] [nbins]
+   if (([hid1] .eq. '') .or. ([hid2] .eq. '') .or. ([nbins] .eq. '')) then
+     mess
+     mess Usage: exe <macro directory>/rebin_y.kumac HID_IN HID_OUT NBINS
+     mess
+     exitm
+   endif
+   
+* If the histogram with hid is not loaded in a memory,
+* load it.
+   if ($hexist([hid1]) .eq. 0) then
+     hrin [hid1]
+   endif
+* If the histogram is not 2D, terminate this macro.
+   if ($hinfo([hid1],'2DHISTO') .ne. 1) then
+     mess The histogram is not 2D.
+     exitm
+   endif
+   
+* Delete temporary vectors created in the previous execution of this macro
+   if ($vexist(con_vec1) .eq. 1) then
+     vec/del con_vec1
+   endif
+   if ($vexist(err_vec1) .eq. 1) then
+     vec/del err_vec1
+   endif
+   if ($vexist(con_vec2) .eq. 1) then
+     vec/del con_vec2
+   endif
+   if ($vexist(err_vec2) .eq. 1) then
+     vec/del err_vec2
+   endif
+   
+   xmin   = $hinfo([hid1],'XMIN')
+   xmax   = $hinfo([hid1],'XMAX')
+   xbins  = $hinfo([hid1],'XBINS')
+   dx     = (([xmax]) - ([xmin]))/([xbins])
+   ymin   = $hinfo([hid1],'YMIN')
+   ymax   = $hinfo([hid1],'YMAX')
+   ybins1 = $hinfo([hid1],'YBINS')
+   dy1    = (([ymax]) - ([ymin]))/([ybins1])
+   ybins2 = [nbins]
+   dy2    = (([ymax]) - ([ymin]))/([ybins2])
+* Create temporary vectors to store the contents of the histogram
+   vec/cre con_vec1([xbins],[ybins1]) r
+   vec/cre err_vec1([xbins],[ybins1]) r
+   get/con [hid1] con_vec1
+   get/err [hid1] err_vec1
+   
+* Remove the histogram with hid = hid2, if it exists
+   if ($hexist([hid2]) .eq. 0) then
+     hrin [hid2]
+   endif
+   if ($hexist([hid2])) then
+     mess Histogram HID: [hid2] already exists
+     mess Exit the macro
+     exitm
+   endif
+   vec/cre con_vec2([xbins],[ybins2]) r
+   vec/cre err_vec2([xbins],[ybins2]) r
+   do i = 1, [xbins]
+     j2_yup1 = 1
+     j2_ylow1 = 1
+     do j1 = 1, [ybins1]
+       ylow1 = ([j1] - 1) * ([dy1]) + ([ymin])
+       yup1  = ([j1]) * ([dy1]) + ([ymin])
+* Find the bin number j2 at ylow1 (j2_ylow1) (In ROOT, j2_ylow1 = hid2->GetYaxis()->FindBin(ylow1))
+       do j2 = [j2_yup1], [ybins2]
+	 ylow2 = ([j2] - 1) * ([dy2]) + ([ymin])
+	 yup2  = ([j2]) * ([dy2]) + ([ymin])
+	 j2_ylow1 = [j2]
+	 if (([ylow1] .ge. [ylow2]) .and. ([ylow1] .lt. [yup2])) then
+	   breakl
+	 endif
+       enddo
+* Find the bin number j2 at yup1 (j2_yup1) (In ROOT, j2_yup1 = hid2->GetYaxis()->FindBin(yup1))
+* If yup1 .eq. ymax2, the breakl line is not executed and j2_yup1 .eq. ybins
+       do j2 = [j2_ylow1], [ybins2]
+	 ylow2 = ([j2] - 1) * ([dy2]) + ([ymin])
+	 yup2  = ([j2]) * ([dy2]) + ([ymin])
+	 j2_yup1 = [j2]
+	 if (([yup1] .ge. [ylow2]) .and. ([yup1] .lt. [yup2])) then
+	   breakl
+	 endif
+       enddo
+* Sum the contents
+       con1 = con_vec1([i],[j1])
+       err1 = err_vec1([i],[j1])
+       do j2 = [j2_ylow1], [j2_yup1]
+	 ylow2 = ([j2] - 1) * ([dy2]) + ([ymin])
+	 yup2  = ([j2]) * ([dy2]) + ([ymin])
+	 fac = 1
+	 if ([ylow1] .lt. [ylow2]) then
+	   fac = ([fac]) - ((([ylow2])-([ylow1])) / [dy1])
+	 endif
+	 if ([yup1] .gt. [yup2]) then
+	   fac = ([fac]) - ((([yup1])-([yup2])) / [dy1])
+	 endif
+* mess i j1 j2 fac [i] [j1] [j2] [fac]
+	 con2 = con_vec2([i],[j2])
+	 err2 = err_vec2([i],[j2])
+	 sum_con = ([con2]) + ([fac])*([con1])
+	 sum_err = $sigma(([err2])**2 + (([fac])*([err1]))**2)
+	 vec/input con_vec2([i],[j2]) [sum_con]
+	 vec/input err_vec2([i],[j2]) [sum_err]
+       enddo
+     enddo
+   enddo
+   2d [hid2] $HTITLE([hid1]) [xbins] [xmin] [xmax] [ybins2] [ymin] [ymax]
+   put/con [hid2] con_vec2
+   put/err [hid2] err_vec2
+ return
+ 
+ 
