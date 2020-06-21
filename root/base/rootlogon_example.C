@@ -76,5 +76,5 @@
 
   /* For kobamac */
   gROOT->ProcessLine(".x $HOME/nobukoba/kobamac/root/base/init_kobamac.C");
-  gROOT->ProcessLine("new TBrowserEx();"); /* Auto launching of the TBrowerEx. This line can be commented out. */ 
+  /* gROOT->ProcessLine("new TBrowserEx();"); */ /* Auto launching of the TBrowerEx. This line can be commented out. */ 
 }
