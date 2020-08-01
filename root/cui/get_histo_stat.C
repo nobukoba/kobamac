@@ -2,7 +2,11 @@ void get_histo_stat(TH1* hist){
   std::cout << std::endl;
   std::cout << "Histo name: " << hist->GetName() << ", title: " <<  hist->GetTitle() << std::endl;
   std::cout << "Histo name: " << hist->GetName() << ", title: " <<  hist->GetTitle() << std::endl;
-
+  
+  Int_t hist_dim = 0;
+  if (hist->InheritsFrom("TH1")) { hist_dim = 1; }
+  if (hist->InheritsFrom("TH2")) { hist_dim = 2; }
+  
   Int_t xfirst = hist->GetXaxis()->GetFirst();
   Int_t xlast  = hist->GetXaxis()->GetLast();
   Int_t nbins = hist->GetXaxis()->GetNbins();
