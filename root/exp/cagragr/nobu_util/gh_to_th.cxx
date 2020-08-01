@@ -31,10 +31,11 @@ public:
 	TDirectory * dir = target->mkdir(obj->GetName());
 	CopyDir((TDirectory *)obj,dir);
       } else if (cl->InheritsFrom(TTree::Class())) {
-	continue;
-	//target->cd();
-	//TTree *T = (TTree*)source->Get(key->GetName());
-	//T->CloneTree(-1,"fast");
+	//continue;
+	target->cd();
+	TTree *T = (TTree*)source->Get(key->GetName());
+	TTree *T2 = T->CloneTree(-1,"fast");
+	T2->Write();
       } else if (cl->InheritsFrom(GH2I::Class())){
 	obj->Copy(gh2i);
 	gh2i.Copy(th2i);
