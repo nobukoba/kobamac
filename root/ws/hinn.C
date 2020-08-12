@@ -6,27 +6,40 @@ void hinn() {
     return;
   }
   TString dir((gBrowserEx->GetInitialWorkingDir()).Data());
-  //const TString dir("."); 
+  /* const TString dir("."); */
   TString fname("temp.hst");
   TGFileInfo fileinfo;
-  const char *filetypes[] = {"hst files", "*.hst",
-		            "All files", "*",
-		            0, 0};
-  std::cout << "Here." << std::endl;
+  
+
+  /* char *filetypes[6] = {"hst files", "*.hst",
+     "All files", "*",
+     0,0};
+     
+     In ROOT v6, this gets warning:
+     warning: ISO C++11 does not allow conversion from string literal to 'char *'
+     [-Wwritable-strings]
+     char *filetypes[6] = {"hst files", "*.hst",
+     ...
+  */
+  
+  char *filetypes[6];
+  filetypes[0] = StrDup("hst files");
+  filetypes[1] = StrDup("*.hst");
+  filetypes[2] = StrDup("All files");
+  filetypes[3] = StrDup("*");
+  filetypes[4] = 0;
+  filetypes[5] = 0;
+
   fileinfo.fFileTypes = (const char**)filetypes;
-  std::cout << "Here2." << std::endl;
-  //fileinfo.fFileTypes = filetypes;
   fileinfo.fIniDir    = StrDup(dir);
   fileinfo.fFilename  = StrDup(fname);
-  std::cout << "Here3." << std::endl;
   TGFileDialog* dialog = new TGFileDialog(gClient->GetRoot(),gClient->GetRoot(),kFDSave,&fileinfo);
-  std::cout << "Here4." << std::endl;
   if (fileinfo.fIniDir == 0) {
     std::cout << "The directory is null." << std::endl;
     return;
   }
   if (fileinfo.fFilename == 0) {
-    //std::cout << "The file name is null." << std::endl;
+    /* std::cout << "The file name is null." << std::endl; */
     std::cout << "Canceled." << std::endl;
     return;
   }
