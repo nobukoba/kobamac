@@ -29,11 +29,10 @@ void hinn() {
   filetypes[3] = StrDup("*");
   filetypes[4] = 0;
   filetypes[5] = 0;
-
   fileinfo.fFileTypes = (const char**)filetypes;
   fileinfo.fIniDir    = StrDup(dir);
   fileinfo.fFilename  = StrDup(fname);
-  TGFileDialog* dialog = new TGFileDialog(gClient->GetRoot(),gClient->GetRoot(),kFDSave,&fileinfo);
+  TGFileDialog* dialog = new TGFileDialog(gClient->GetRoot(),gClient->GetRoot(),kFDOpen,&fileinfo);
   if (fileinfo.fIniDir == 0) {
     std::cout << "The directory is null." << std::endl;
     return;

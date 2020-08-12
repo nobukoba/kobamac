@@ -26,6 +26,15 @@ void files_to_graphs() {
 		       "Data files", "*.dat",
 		       "All files", "*",
 		       0, 0};
+  char *filetypes[8];
+  filetypes[0] = StrDup("Text files");
+  filetypes[1] = StrDup("*.txt");
+  filetypes[2] = StrDup("Data files");
+  filetypes[3] = StrDup("*.dat");
+  filetypes[4] = StrDup("All files");
+  filetypes[5] = StrDup("*");
+  filetypes[6] = 0;
+  filetypes[7] = 0;
   fileinfo.fFileTypes = (const char**)filetypes;
   //fileinfo.fFileTypes = filetypes;
   fileinfo.fIniDir    = StrDup(dir);

@@ -21,8 +21,11 @@ void read_techno_ap_mca() {
   TString dir("."); 
   /* onst TString dir(".");  */
   TGFileInfo fileinfo;
-  char *filetypes[] = {"All files", "*",
-		       0, 0};
+  char *filetypes[4];
+  filetypes[0] = StrDup("All files");
+  filetypes[1] = StrDup("*");
+  filetypes[2] = 0;
+  filetypes[3] = 0;
   fileinfo.fFileTypes = (const char**)filetypes;
   /* fileinfo.fFileTypes = filetypes; */
   fileinfo.fIniDir    = StrDup(dir);
