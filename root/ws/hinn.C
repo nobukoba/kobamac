@@ -1,27 +1,12 @@
 void hinn() {
-  
+  std::cout << std::endl << "Macro: hinn.C" << std::endl;
   TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
-  if (!gBrowserEx) {
-    std::cout << "No gBrowserEx. exit." << std::endl;
-    return;
-  }
-  TString dir((gBrowserEx->GetInitialWorkingDir()).Data());
-  /* const TString dir("."); */
-  TString fname("temp.hst");
-  TGFileInfo fileinfo;
-  
+  if (gBrowserEx) {
+    gSystem->cd((gBrowserEx->GetInitialWorkingDir()).Data());
+  }else{return;}
 
-  /* char *filetypes[6] = {"hst files", "*.hst",
-     "All files", "*",
-     0,0};
-     
-     In ROOT v6, this gets warning:
-     warning: ISO C++11 does not allow conversion from string literal to 'char *'
-     [-Wwritable-strings]
-     char *filetypes[6] = {"hst files", "*.hst",
-     ...
-  */
-  
+  TString dir("."); 
+  TGFileInfo fileinfo;
   char *filetypes[6];
   filetypes[0] = StrDup("hst files");
   filetypes[1] = StrDup("*.hst");
@@ -31,87 +16,86 @@ void hinn() {
   filetypes[5] = 0;
   fileinfo.fFileTypes = (const char**)filetypes;
   fileinfo.fIniDir    = StrDup(dir);
-  fileinfo.fFilename  = StrDup(fname);
+  fileinfo.SetMultipleSelection(kTRUE);
   TGFileDialog* dialog = new TGFileDialog(gClient->GetRoot(),gClient->GetRoot(),kFDOpen,&fileinfo);
   if (fileinfo.fIniDir == 0) {
-    std::cout << "The directory is null." << std::endl;
+    std::cout << "The directory is null. Exit." << std::endl;
     return;
   }
-  if (fileinfo.fFilename == 0) {
-    /* std::cout << "The file name is null." << std::endl; */
-    std::cout << "Canceled." << std::endl;
+  if ((!fileinfo.fFileNamesList)&&(!fileinfo.fFilename)) {
+    std::cout << "Canceled. Exit." << std::endl;
     return;
   }
+  TList *listptr;
+  if (fileinfo.fFilename) {
+    listptr = new TList();
+    listptr->Add(new TObjString(fileinfo.fFilename));
+  }else{
+    listptr = (TList*)fileinfo.fFileNamesList;
+  }
+  Int_t nfiles = listptr->GetEntries();
   
-  ifstream ifs(fileinfo.fFilename);
-  if((!ifs.fail())&&(!fileinfo.fOverwrite)) {
-    std::cout << "The file " << fileinfo.fFilename << " exits and fOverwrite is false!" << std::endl;
-    return;
+  TIter next(listptr);
+  TObjString *ostr;
+  Int_t ifile = 0;
+  gROOT->cd();
+  while ((ostr = (TObjString*)next())){
+    TString str = ostr->GetString();
+    str.ReplaceAll("\"","");
+    str.ReplaceAll(" ","");
+    std::cout << std::endl;
+    std::string filename = str.Data();
+    std::cout << "Selected file: " << filename << std::endl;
+    std::string basename = gSystem->BaseName(str);
+    std::cout << "Base name: " << basename << std::endl;
+
+    Int_t ncolumns = 0;
+    Int_t nlines   = 0;
+    std::string buf;
+    TString buf_tstr;
+    
+    std::ifstream ifs(filename.c_str());
+    if(ifs && getline(ifs,buf)){
+      nlines++;
+    }else{
+      std::cout << "The file could not be read." << std::endl;
+      continue;
+    }
+    buf_tstr = buf;
+    buf_tstr.ReplaceAll(","," ");
+    std::istringstream iss(buf_tstr.Data());
+    Double_t tmp;
+    while(iss >> tmp){
+      ncolumns++;
+    }
+    while(ifs && getline(ifs, buf)){ /* getline is very slow in CINT!*/
+      nlines++;
+    }    
+
+    TH1D **hpp = new TH1D*[ncolumns];
+    for (Int_t icolumn = 0; icolumn < ncolumns; icolumn++) {
+	TString str_n = "h1";
+	Int_t num = 2;
+	while (gROOT->Get(str_n.Data())) {
+	  str_n = Form("h%d",num);
+	  num++;
+	}
+      	hpp[icolumn] = new TH1D(str_n,basename.c_str(),nlines,0,nlines);
+    }
+    
+    ifs.clear();
+    ifs.seekg(0);
+    for (Int_t iline = 0; iline < nlines; iline++) {
+      getline(ifs,buf);
+      buf_tstr = buf;
+      buf_tstr.ReplaceAll(","," ");
+      std::istringstream iss2(buf_tstr.Data());
+      Double_t tmp2;
+      for (Int_t icolumn = 0; icolumn < ncolumns; icolumn++) {
+	iss2 >> tmp2;
+	hpp[icolumn]->SetBinContent(iline+1,tmp2);
+      }
+    }
   }
-  ifs.close();
-  
-//  TCanvas* canvas = gPad->GetCanvas();
-//  TList* list     = canvas->GetListOfPrimitives();
-//  if (list->At(0)==0) {return;}
-//  Int_t no_pads  = list->GetSize();
-//  if (no_pads != n_hist) {
-//    std::cout << "Number of pads should be " << n_hist << ". Stopped now." << std::endl;
-//    return;
-//  }
-//  
-//  TH1 **hist = new TH1*[n_hist];
-//  for (Int_t i=0; i < n_hist; i++){
-//    hist[i] = 0;
-//    TVirtualPad *sel_pad = canvas->GetPad(i+1);
-//    TList *listofpri = sel_pad->GetListOfPrimitives();
-//    if (listofpri == 0) {
-//      std::cout << "The pad includes nothing." << std::endl;
-//      return;
-//    }
-//    TIter next(listofpri);
-//    TObject *obj;
-//    while ((obj = next())){
-//      if (obj->InheritsFrom("TH2")) {
-//	std::cout << "This script can not handle TH2 histograms." << std::endl;
-//	return;
-//      }
-//      if (obj->InheritsFrom("TH1")) {
-//	hist[i] = (TH1*)obj;
-//	break;
-//      }
-//    }
-//    if(hist[i] == 0){
-//      std::cout << "TH1 histogram was not found for i = "<< i << std::endl;
-//      return;
-//    }
-//  }
-//  
-//  Int_t nbinsx = hist[0]->GetNbinsX();
-//  for (Int_t i=1; i<n_hist; i++){
-//    if(nbinsx != hist[i]->GetNbinsX()) {
-//      std::cout << "The number of bins is not same as others." << std::endl;
-//      return;
-//    }
-//  }
-//
-//  
-//  ofstream ofs(fileinfo.fFilename);
-//  ofs << std::fixed << std::showpoint;
-//  for (Int_t i = 1; i <= 1024; i++) {
-//    for (Int_t j = 0; j < n_hist; j++) {
-//      ofs << " "
-//	  << std::setw(7)
-//	  << std::setprecision(0);
-//      if (i <= nbinsx) {
-//	ofs << hist[j]->GetBinContent(i);
-//      }else{
-//	ofs << 0.;
-//      }
-//    }
-//    ofs << std::endl;
-//  }
-//  ofs.close();
-//  std::cout << "The file " << fileinfo.fFilename << " was created." << std::endl;
-//  delete [] hist;
   return;
 }
