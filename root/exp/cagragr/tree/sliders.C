@@ -18,7 +18,7 @@ class SimpleHSliders : public TGMainFrame {
   RQ_OBJECT("SimpleHSliders")
 private:
   TGHorizontalFrame   *fHframe0, *fHframe1;
-  TGLayoutHints       *fBly, *fBfly1;
+  TGLayoutHints       *fBly, *fBfly;
   TGHSlider           *fHslider0, *fHslider1;
   TGTextEntry         *fTeh0, *fTeh1;
   TGTextBuffer        *fTbh0, *fTbh1;
@@ -84,12 +84,12 @@ SimpleHSliders::SimpleHSliders() : TGMainFrame(gClient->GetRoot(), 100, 100)
   /*--- layout for buttons: top align, equally expand horizontally */
   fBly = new TGLayoutHints(kLHintsTop | kLHintsExpandX, 5, 5, 5, 5);
   /*--- layout for the frame: place at bottom, right aligned */
-  fBfly1 = new TGLayoutHints(kLHintsTop | kLHintsRight, 5, 5, 5, 5);
+  fBfly = new TGLayoutHints(kLHintsTop | kLHintsRight, 5, 5, 5, 5);
   
   fHframe0->AddFrame(fHslider0, fBly);
-  fHframe0->AddFrame(fTeh0, fBfly1);
+  fHframe0->AddFrame(fTeh0, fBfly);
   fHframe1->AddFrame(fHslider1, fBly);
-  fHframe1->AddFrame(fTeh1, fBfly1);
+  fHframe1->AddFrame(fTeh1, fBfly);
   AddFrame(fHframe0, fBly);
   AddFrame(fHframe1, fBly);
   
