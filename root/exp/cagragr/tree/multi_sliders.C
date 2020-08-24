@@ -3,17 +3,27 @@
 /* Modified by Nobu 2020.08.02 */
 #include <iostream>
 #include "TGButton.h"
-#include "TRootEmbeddedCanvas.h"
 #include "TGLayout.h"
-#include "TH2D.h"
+#include "TH2.h"
 #include "TTree.h"
+#include "TFile.h"
 #include "TMath.h"
 #include "TCanvas.h"
 #include "TGTextEntry.h"
 #include "TGSlider.h"
 
+void dh_dy(TH1* hist, TH1* hout){
+  for (Int_t i = 1; i <= hist->GetNbinsX(); i++) {
+    for (Int_t j = 2; j <= hist->GetNbinsY(); j++) {
+      hout->SetBinContent(i,j,hist->GetBinContent(i,j)
+			  -hist->GetBinContent(i,j-1));
+    }
+  }
+  return;
+}
+
 class MultiHSliders : public TGMainFrame {
-  RQ_OBJECT("MultiHSliders")
+  /*  RQ_OBJECT("MultiHSliders") */
 private:
   Int_t               nsliders;
   TGLayoutHints       *fBly, *fBfly;
@@ -185,6 +195,10 @@ class HistoManager {
 private:
   TTree    *tr;
   TH2D     *hist;
+  TH2D     *hist_g;
+  TH2D     *hist_d;
+  TH1D     *hpry;
+  TH1D     *hpry2;
   TCanvas  *canvas;
   Int_t nhits;
   Double_t rf, x, y, th, ph, de1, de2;
@@ -200,7 +214,7 @@ public:
 HistoManager::HistoManager(MultiHSliders * mhs)
 {
   /* TFile *f = TFile::Open("/home/kobayash/mnt/GRUTinizer/output/date20200813/run2214/hist_MakeGRTree_Nobu_20200811_drftok_fin_q.root");*/
-  TFile *f = TFile::Open("./hist_MakeGRTree_Nobu_20200811_drftok_fin_q.root");
+  TFile *f = TFile::Open("./hist_MakeGRTree_Nobu_20200811_drftok_fin_q_nogrut.root");
   tr = (TTree *)f->Get("tr");
   tr->Print();
   tr->SetBranchAddress("nhits",   &nhits);
@@ -212,7 +226,12 @@ HistoManager::HistoManager(MultiHSliders * mhs)
   tr->SetBranchAddress("de1",     &de1);
   tr->SetBranchAddress("de2",     &de2);
   canvas = new TCanvas("cV3D","PolyLine3D & PolyMarker3D Window",200,10,500,500);
-  hist = new TH2D ("h","h",200, -1000., 1000, 200, -300., 300.);
+  canvas->Divide(2,2);
+  hist   = new TH2D ("h","h",200, -1000., 1000, 200, -10., 10.);
+  hist_g = new TH2D ("hg","hg",200, -1000., 1000, 200, -10., 10.);
+  hist_d = new TH2D ("hd","hd",200, -1000., 1000, 200, -10., 10.);
+  hpry = new TH1D ("hpry","hpry",200, -10., 10.);
+  hpry2 = new TH1D ("hpry2","hpry2",200, -10., 10.);
   mhs->Connect("DoFunction()", "HistoManager", this, "DrawHistos()");
   mhs->DoFunction();
 }
@@ -224,15 +243,18 @@ void HistoManager::DrawHistos()
   ULong64_t NumOfEntries = tr->GetEntries();
 
   MultiHSliders *mhs = (MultiHSliders *) gTQSender;
-  Double_t a = mhs->GetVal(0);
-  Double_t z = mhs->GetVal(1);
-  std::cout << "tr->GetEntries(): " << NumOfEntries << std::endl;
-  std::cout << "a: " << a << std::endl;
-  std::cout << "z: " << z << std::endl;
-  //for (Int_t i = 0; i < NumOfEntries; i++) {
+  Double_t v0 = mhs->GetVal(0);
+  Double_t v1 = mhs->GetVal(1);
+  //std::cout << "tr->GetEntries(): " << NumOfEntries << std::endl;
   hist->Reset();
-  for (Int_t i = 0; i < 100000; i++) {
+  hist_g->Reset();
+  for (Int_t i = 0; i < NumOfEntries; i++) {
+    //for (Int_t i = 0; i < 100000; i++) {
     tr->GetEntry(i);
+    //hist->Fill(x,th-0.0031*x);
+    if ((rf+22*(th-0.0065*x))<920&&(rf+22*(th-0.0065*x))>860){
+      hist_g->Fill(x+v0*th*th,th-0.0031*x);
+    }
     //if (i %100000 == 0) {
     //std::cout << "Event number: " << i << std::endl;
     ////}
@@ -240,16 +262,39 @@ void HistoManager::DrawHistos()
     //std::cout << "y: "  << y << std::endl;
     //std::cout << "th: " << th << std::endl;
     //std::cout << "ph: " << ph << std::endl;
-    hist->Fill(x+th*d2r*z,y+ph*d2r*z);
   }
-  hist->Draw("colz");
+
+//  dh_dy(hist_g,hist_d);
+//  
+//  for (Int_t i = 1; i <= hist_d->GetNbinsX(); i++) {
+//    for (Int_t j = 1; j <= hist_d->GetNbinsY(); j++) {
+//      hpry->SetBinContent(j,hpry->GetBinContent(j)
+//			  +hist_d->GetBinContent(i,j));
+//    }
+//  }
+//
+//  for (Int_t i = 1; i <= hpry->GetNbinsX(); i++) {
+//      hpry2->SetBinContent(i,hpry->GetBinContent(i)*hpry->GetBinContent(i));
+//  }
+
+  
+  canvas->cd(1);
+  hpry2->Draw("colz");
+  canvas->cd(2);
+  hist_d->Draw("colz");
+  canvas->cd(3);
+  hist_g->Draw("colz");
+  canvas->cd(4);
+  hpry->Draw("");
   canvas->Modified();
   canvas->Update();
 }
 
+
 void multi_sliders()
 {
   MultiHSliders *mhs = new MultiHSliders(10);
+  mhs->SetMinMax(0,0.,1.);
   mhs->SetMinMax(1,-10000.,10000.);
   new HistoManager(mhs);
 }
