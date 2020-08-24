@@ -15,9 +15,10 @@
 enum ECommandIdentifiers { HId0, HId1, HSId0, HSId1 };
 
 class SimpleHSliders : public TGMainFrame {
+  RQ_OBJECT("SimpleHSliders")
 private:
   TGHorizontalFrame   *fHframe0, *fHframe1;
-  TGLayoutHints       *fBly, *fBfly1;
+  TGLayoutHints       *fBly, *fBfly;
   TGHSlider           *fHslider0, *fHslider1;
   TGTextEntry         *fTeh0, *fTeh1;
   TGTextBuffer        *fTbh0, *fTbh1;
@@ -30,7 +31,8 @@ public:
   void DoText(const char *text);
   void DoSlider();
   void DoFunction();
-  void DoFunction(Double_t, Double_t);
+  Double_t GetA();
+  Double_t GetZ();
   ClassDef(SimpleHSliders, 1)
 };
 
@@ -82,12 +84,12 @@ SimpleHSliders::SimpleHSliders() : TGMainFrame(gClient->GetRoot(), 100, 100)
   /*--- layout for buttons: top align, equally expand horizontally */
   fBly = new TGLayoutHints(kLHintsTop | kLHintsExpandX, 5, 5, 5, 5);
   /*--- layout for the frame: place at bottom, right aligned */
-  fBfly1 = new TGLayoutHints(kLHintsTop | kLHintsRight, 5, 5, 5, 5);
+  fBfly = new TGLayoutHints(kLHintsTop | kLHintsRight, 5, 5, 5, 5);
   
   fHframe0->AddFrame(fHslider0, fBly);
-  fHframe0->AddFrame(fTeh0, fBfly1);
+  fHframe0->AddFrame(fTeh0, fBfly);
   fHframe1->AddFrame(fHslider1, fBly);
-  fHframe1->AddFrame(fTeh1, fBfly1);
+  fHframe1->AddFrame(fTeh1, fBfly);
   AddFrame(fHframe0, fBly);
   AddFrame(fHframe1, fBly);
   
@@ -170,23 +172,34 @@ void SimpleHSliders::DoSlider()
 }
 
 /*______________________________________________________________________________*/
-void SimpleHSliders::DoFunction()
-{
-  DoFunction(fSliderPich0*fHslider0->GetPosition()+fSliderMin0,
-	     fSliderPich1*fHslider1->GetPosition()+fSliderMin1);
+void SimpleHSliders::DoFunction() {
+  Emit("DoFunction()");
+}
+/*______________________________________________________________________________*/
+Double_t SimpleHSliders::GetA() {
+  return fSliderPich0*fHslider0->GetPosition()+fSliderMin0;
+}
+/*______________________________________________________________________________*/
+Double_t SimpleHSliders::GetZ() {
+  return fSliderPich1*fHslider1->GetPosition()+fSliderMin1;
 }
 
 /*______________________________________________________________________________*/
-void SimpleHSliders::DoFunction(Double_t val0, Double_t val1)
+/* This works in ROOT v6, but does not work in ROOT v5.34.38
+at the distination, the double value becomes 4.94066e-322 or so
+void SimpleHSliders::DoFunction(double val0, double val1)
 {
+  std::cout << "val0" << val0 <<std::endl;
+  std::cout << "val1" << val1 <<std::endl;
   Long_t args[2];
   args[0] = (Long_t)val0;
   args[1] = (Long_t)val1;
-  Emit("DoFunction(Double_t, Double_t)",args);
+  
+  Emit("DoFunction(double, double)",args);
 }
-
+*/
 /*______________________________________________________________________________*/
-class HistoManager : public TQObject  {
+class HistoManager {
 private:
   TTree    *tr;
   TH2D     *hist;
@@ -197,14 +210,15 @@ public:
   HistoManager(SimpleHSliders * );
   ~HistoManager();
   void Initialize();
-  void DrawHistos(Double_t, Double_t);
+  void DrawHistos();
   ClassDef(HistoManager, 1)
 };
 
 /*______________________________________________________________________________*/
 HistoManager::HistoManager(SimpleHSliders * shs)
 {
-  TFile *f = TFile::Open("hist_MakeGRTree_Nobu_20200801_chk_q_nogrut.root");
+  /* TFile *f = TFile::Open("/home/kobayash/mnt/GRUTinizer/output/date20200813/run2214/hist_MakeGRTree_Nobu_20200811_drftok_fin_q.root");*/
+  TFile *f = TFile::Open("./hist_MakeGRTree_Nobu_20200811_drftok_fin_q.root");
   tr = (TTree *)f->Get("tr");
   tr->Print();
   tr->SetBranchAddress("nhits",   &nhits);
@@ -217,18 +231,24 @@ HistoManager::HistoManager(SimpleHSliders * shs)
   tr->SetBranchAddress("de2",     &de2);
   canvas = new TCanvas("cV3D","PolyLine3D & PolyMarker3D Window",200,10,500,500);
   hist = new TH2D ("h","h",200, -1000., 1000, 200, -300., 300.);
-  shs->Connect("DoFunction(Double_t, Double_t)", "HistoManager", this, "DrawHistos(Double_t, Double_t)");
+  shs->Connect("DoFunction()", "HistoManager", this, "DrawHistos()");
   shs->DoFunction();
 }
 HistoManager::~HistoManager()
 {
 }
 
-void HistoManager::DrawHistos(Double_t a, Double_t z)
+void HistoManager::DrawHistos()
 {
   double d2r = 3.141592653589793238/180.;
   ULong64_t NumOfEntries = tr->GetEntries();
-  //std::cout << "tr->GetEntries(): " << NumOfEntries << std::endl;
+
+  SimpleHSliders *shs = (SimpleHSliders *) gTQSender;
+  Double_t a = shs->GetA();
+  Double_t z = shs->GetZ();
+  std::cout << "tr->GetEntries(): " << NumOfEntries << std::endl;
+  std::cout << "a: " << a << std::endl;
+  std::cout << "z: " << z << std::endl;
   //for (Int_t i = 0; i < NumOfEntries; i++) {
   hist->Reset();
   for (Int_t i = 0; i < 100000; i++) {

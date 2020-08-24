@@ -21,9 +21,13 @@ void read_kromek_spe_files() {
   TString dir("."); 
   /* const TString dir(".");  */
   TGFileInfo fileinfo;
-  char *filetypes[] = {"hst files", "*.spe",
-		       "All files", "*",
-		       0, 0};
+  char *filetypes[6];
+  filetypes[0] = StrDup("hst files");
+  filetypes[1] = StrDup("*.spe");
+  filetypes[2] = StrDup("All files");
+  filetypes[3] = StrDup("*");
+  filetypes[4] = 0;
+  filetypes[5] = 0;
   fileinfo.fFileTypes = (const char**)filetypes;
   /* fileinfo.fFileTypes = filetypes; */
   fileinfo.fIniDir    = StrDup(dir);

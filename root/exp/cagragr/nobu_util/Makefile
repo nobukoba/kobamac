@@ -4,8 +4,10 @@ CXX       = g++
 CXXFLAGS  = $(shell root-config --cflags)
 LFLAGS    = 
 ROOTLIBS  = $(shell root-config --libs)
-INCLUDE   = -I$(HOME)/GRUTinizer/include
-GRUTLIBS  = -L$(HOME)/GRUTinizer/lib -lAllGrutinizer -lGROOT -lTKinematics -lTNucleus -lTGEBFormat -lTHistogramming -lTGRUTUtil -lTGRUTint -lSourceData -lTLenda -lTS800 -lTS800Sim -lTGretina -lTCaesar -lTFastScint -lTJanus -lTDetector -lTSega -lTCagra -lTGrandRaiden -lTPhosWall -lTNSCLScalers -lTGretSim -lTSRIM -lTReaction -lTRawFormat -lTNSCLFormat -lTLoops
+#GRUTDIR   = $(HOME)/mnt/GRUTinizer
+GRUTDIR   = $(HOME)/GRUTinizer
+INCLUDE   = -I$(GRUTDIR)/include
+GRUTLIBS  = -L$(GRUTDIR)/lib -lAllGrutinizer -lGROOT -lTKinematics -lTNucleus -lTGEBFormat -lTHistogramming -lTGRUTUtil -lTGRUTint -lSourceData -lTLenda -lTS800 -lTS800Sim -lTGretina -lTCaesar -lTFastScint -lTJanus -lTDetector -lTSega -lTCagra -lTGrandRaiden -lTPhosWall -lTNSCLScalers -lTGretSim -lTSRIM -lTReaction -lTRawFormat -lTNSCLFormat -lTLoops
 
 
 all:	$(TARGETS)
