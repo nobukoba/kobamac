@@ -63,5 +63,9 @@ void cut_xy_gui(){
   }
 
   gROOT->ProcessLine(Form(".L %s/root/cui/cut_xy.C", gEnv->GetValue("KOBAMAC_DIR",".")));
-  gROOT->ProcessLine(Form("cut_xy((TH1*)%p,%f,%f,%f,%f)" hist, x0, x1, y0, y1));
+  std::cout<< "here1"<<std::endl;
+
+  gROOT->ProcessLine(Form("cut_xy((TH1*)%p,%f,%f,%f,%f)", hist, x0, x1, y0, y1));
+  std::cout<< "here2"<<std::endl;
+  return;
 }
