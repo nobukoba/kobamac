@@ -1,5 +1,6 @@
 void init() {
   gROOT->SetStyle("Plain");
+  gStyle->SetPalette(kBird);
   //gStyle->SetPaperSize(10,10);
   gStyle->SetCanvasBorderMode(0);
   gStyle->SetCanvasBorderSize(0);
@@ -51,9 +52,11 @@ void cagra_nim_coin_208pb_prox_2col() {
   gROOT->ForceStyle(); 
   //TFile *f = new TFile("date20190727_merged2_w_bgsub.root");
   //TH2 *hcln = (TH2*)f->Get("histOut");
-  TFile *f = new TFile("/home/kobayash/GRUTinizer/output/date20200603/hist_MakeClover_Nobu_20200603_e_above_2132_2158_bgsub.root");
+  //TFile *f = new TFile("/home/kobayash/GRUTinizer/output/date20200603/hist_MakeClover_Nobu_20200603_e_above_2132_2158_nogrut_basia.root");
+  TFile *f = new TFile("/home/kobayash/GRUTinizer/output/date20200603/hist_MakeClover_Nobu_20200603_e_above_2132_2158_nogrut_basia.root");
   //TH2 *hcln = (TH2*)f->Get("histOut");
-  TH2 *hcln = (TH2*)f->Get("EgEx_rgr_tg_thc_cln1");
+  TH2 *hcln = (TH2*)f->Get("EgEx_rgr_tg_thc");
+  std::cout << "hcln: " << hcln << std::endl;
   TH2 *hcln2 = (TH2*)hcln->Clone("hcln2");
   TGraph *gr = new TGraph();
   Double_t hwid = 0.05;
