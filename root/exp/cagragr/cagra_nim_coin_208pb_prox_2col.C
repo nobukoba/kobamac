@@ -1,6 +1,21 @@
 void init() {
   gROOT->SetStyle("Plain");
-  gStyle->SetPalette(kBird);
+  TString root_ver_str = gROOT->GetVersion();
+  root_ver_str.Resize(4);
+  Double_t root_ver = root_ver_str.Atof();
+  if (root_ver >= 6) {
+    gStyle->SetPalette(kBird);
+  }else{
+    /* kBird pallete */
+    Double_t red[9]   = { 0.2082, 0.0592, 0.0780, 0.0232, 0.1802, 0.5301, 0.8186, 0.9956, 0.9764};
+    Double_t green[9] = { 0.1664, 0.3599, 0.5041, 0.6419, 0.7178, 0.7492, 0.7328, 0.7862, 0.9832};
+    Double_t blue[9]  = { 0.5293, 0.8684, 0.8385, 0.7914, 0.6425, 0.4662, 0.3499, 0.1968, 0.0539};
+    Double_t stops[9] = { 0.0000, 0.1250, 0.2500, 0.3750, 0.5000, 0.6250, 0.7500, 0.8750, 1.0000};
+    Int_t FI = TColor::CreateGradientColorTable(9, stops, red, green, blue, 255);
+    Int_t MyPalette[256];
+    for (int i=0;i<255;i++) MyPalette[i] = FI+i;
+    gStyle->SetPalette(255, MyPalette);
+  }
   //gStyle->SetPaperSize(10,10);
   gStyle->SetCanvasBorderMode(0);
   gStyle->SetCanvasBorderSize(0);
@@ -53,7 +68,7 @@ void cagra_nim_coin_208pb_prox_2col() {
   //TFile *f = new TFile("date20190727_merged2_w_bgsub.root");
   //TH2 *hcln = (TH2*)f->Get("histOut");
   //TFile *f = new TFile("/home/kobayash/GRUTinizer/output/date20200603/hist_MakeClover_Nobu_20200603_e_above_2132_2158_nogrut_basia.root");
-  TFile *f = new TFile("/home/kobayash/GRUTinizer/output/date20200603/hist_MakeClover_Nobu_20200603_e_above_2132_2158_nogrut_basia.root");
+  TFile *f = new TFile("/home/kobayash/mnt/GRUTinizer/output/date20200603/hist_MakeClover_Nobu_20200603_e_above_2132_2158_nogrut_basia.root");
   //TH2 *hcln = (TH2*)f->Get("histOut");
   TH2 *hcln = (TH2*)f->Get("EgEx_rgr_tg_thc");
   std::cout << "hcln: " << hcln << std::endl;
