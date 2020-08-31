@@ -20,6 +20,7 @@ void init_kobamac(){
   gROOT->ProcessLine(Form(".L %s/root/base/WaitOneClickX.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   gROOT->ProcessLine(Form(".L %s/root/base/WaitOneClickY.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   gROOT->ProcessLine(Form(".L %s/root/base/WaitOneClickT.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+  gROOT->ProcessLine(Form(".L %s/root/base/WaitGraphicalCut.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   gROOT->ProcessLine("TBrowserEx *gBrowserEx = 0;");
   return;
 }
