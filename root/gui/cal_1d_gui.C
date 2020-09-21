@@ -38,11 +38,12 @@ void cal_1d_gui(){
     pars[i]     = min;
   }
   
+  TH1* hist = 0;
+  TList *funclist = 0;
   for (Int_t i=0; i < pars.size();i++){
     Double_t x0, y0;
     WaitOneClickX *primi = new WaitOneClickX(&x0, &y0); delete primi;
     TList* listofpri = gPad->GetListOfPrimitives();
-    TH1* hist = 0;
     TIter next(listofpri); TObject *obj;
     while ((obj = next())){
       if (obj->InheritsFrom("TH2")) {
@@ -60,6 +61,7 @@ void cal_1d_gui(){
       gPad->SetCrosshair(0);
       return;
     }
+
     TLine line;
     line.DrawLine(x0,hist->GetMinimum(),x0,hist->GetMaximum());
     Double_t x1, y1;
@@ -80,7 +82,7 @@ void cal_1d_gui(){
     Double_t bwid  = hist->GetBinWidth(1);
     Double_t xrang = x1 - x0;
     
-    TList *funclist = hist->GetListOfFunctions();
+    funclist = hist->GetListOfFunctions();
     Int_t j = 0;
     while(funclist->FindObject(Form("fit_eg_%d",j))){
       j++;
@@ -102,7 +104,7 @@ void cal_1d_gui(){
     par[3] = fgaus->GetParameter(1);
     par[4] = fgaus->GetParameter(2);
     funclist->Last()->Delete();
-    
+
     TF1* fit_func = new TF1(Form("fit_eg_%d",j),"expo(0)+gaus(2)",x0,x1);
     fit_func->SetParameters(&(par[0]));
     fit_func->SetParName(0,"p0");
@@ -112,8 +114,8 @@ void cal_1d_gui(){
     fit_func->SetParName(4,"Sigma");
     fit_func->SetLineWidth(1);
     hist->Fit(fit_func,"R+");
-    gPad->Update();
-    gPad->Modified();
+    /*gPad->Update();
+      gPad->Modified();*/
     fit_pars[i]  = fit_func->GetParameter(3);
     fit_epars[i] = fit_func->GetParError(3);
   }
@@ -141,14 +143,17 @@ void cal_1d_gui(){
 				       &(epars[0]), &(fit_epars[0]));
   TF1* cal_func = new TF1("cal_func","pol1",pars[0], pars[pars.size()-1]);
   gr->Fit("cal_func");
-  gr->Draw("a*");
-  gPad->Update();
-  gPad->Modified();
+  /* gr->Draw("a*");
+     gPad->Update();
+     gPad->Modified(); */
+  
   Double_t p0 = cal_func->GetParameter(0);
   Double_t p1 = cal_func->GetParameter(1);
-  Double_t a  = 1./p0;
-  Double_t b  = -p1/p0;
-  
+  Double_t a  = 1./p1;
+  Double_t b  = -p0/p1;
+  gr->Delete();
+  cal_func->Delete();
+  /*funclist->Delete();*/
   gROOT->ProcessLine(Form(".L %s/root/cui/cal_1d.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   gROOT->ProcessLine(Form("cal_1d((TH1*)%p,%f,%f)", hist,a,b));
   return;
