@@ -69,8 +69,8 @@ void fit_eg() {
   hist->Fit(fgaus,"R+");
 
   Double_t par[5];
-  //par[0] = (y0*x1-y1*x0)/(x1-x0);
-  //par[1] = (y1-y0)/(x1-x0);
+  /* par[0] = (y0*x1-y1*x0)/(x1-x0);
+     par[1] = (y1-y0)/(x1-x0);*/
   par[0] = (log(y0)*x1-log(y1)*x0)/(x1-x0);
   par[1] = (log(y1)-log(y0))/(x1-x0);
   par[2] = fgaus->GetParameter(0);

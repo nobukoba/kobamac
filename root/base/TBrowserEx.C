@@ -41,6 +41,15 @@
   TRootBrowser.cxx should be the same as the hist_browser pointer.
   Unused pointer "file_browser" was removed from the code.  The order
   of lines are rearranged in the constructer (ctor) of TBrowserEx.
+
+
+  20-SEP-2020
+  
+  Because of missing of #include "TVirtualX.h" and "TObjString.h", a
+  lot of errors appears for ROOT v6.22/02. The errors looks like
+  "./TBrowserEx.C:302:5: error: use of undeclared identifier
+  'gVirtualX' ./TBrowserEx.C:337:91: error: member access into
+  incomplete type 'TObjString'"
   
 */
 
@@ -59,6 +68,8 @@
 #include "TGPicture.h"
 #include "TGInputDialog.h"
 #include "TGTextEditDialogs.h"
+#include "TVirtualX.h"
+#include "TObjString.h"
 #include "TBrowser.h"
 #include "TRootBrowser.h"
 #include "TRootCanvas.h"
