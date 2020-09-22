@@ -5,7 +5,7 @@ void cal_1d_gui(){
   }
   TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
   if (gBrowserEx == 0) {return;}
-  TString str = gBrowserEx->OpenTGInputDialog("Peak energies");
+  TString str = gBrowserEx->OpenTGInputDialog("Peak energies (1172 1332 etc...)");
   if (str.EqualTo("")) {return;}
   
   std::istringstream iss(str.Data());
@@ -151,6 +151,14 @@ void cal_1d_gui(){
   Double_t p1 = cal_func->GetParameter(1);
   Double_t a  = 1./p1;
   Double_t b  = -p0/p1;
+  std::cout << "Fit parameters of y = p0 + p1*x:" << std::endl;
+  std::cout << "p0 = " << p0 << std::endl;
+  std::cout << "p1 = " << p1 << std::endl;
+  std::cout << "Parameters of inv. func. x = a*y + b:" << std::endl;
+  std::cout << "a = " << a << std::endl;
+  std::cout << "b = " << b << std::endl;
+  std::cout << "Different expression for b a:"<< std::endl;
+  std::cout << b << " " << a << std::endl;
   gr->Delete();
   cal_func->Delete();
   /*funclist->Delete();*/

@@ -5,6 +5,7 @@
   Created:  03-MAY-2020 by Nobu Kobayashi
   Version 1.00 03-MAY-2020 by Nobu Kobayashi
   Version 1.01 05-MAY-2020 by Nobu Kobayashi
+  Version 1.02 20-SEP-2020 by Nobu Kobayashi
 
   03-MAY-2020
 
@@ -123,6 +124,7 @@ protected:
   TTimer*          timer;
   Int_t            current_hist_number;
   TString          initial_working_dir;
+  TString          str_input_dialog;
   TString          str_input_dialog_1;
   TString          str_input_dialog_2;
   TString          str_input_dialog_3;
@@ -161,6 +163,7 @@ public:
     hist_fListTree(0),
     timer(0),
     current_hist_number(0),
+    str_input_dialog("1.0 2.0"),
     str_input_dialog_1("1.0"),
     str_input_dialog_2("0.0 1.0"),
     str_input_dialog_3("1.0 1.0 2.0"),
@@ -1070,7 +1073,12 @@ public:
   }
   TString OpenTGInputDialog(const char *mes, Int_t no){
     TString tmp = "";
-    if (no == 0) {
+    if (no == -1) {
+      tmp = OpenTGInputDialog(mes, str_input_dialog.Data(), no);
+      if (!tmp.EqualTo("")){
+	str_input_dialog = tmp;
+      }
+    }else if (no == 0) {
       return OpenTGInputDialog(mes, "", no);
     }else if(no==1){
       tmp = OpenTGInputDialog(mes, str_input_dialog_1.Data(), no);
@@ -1096,7 +1104,7 @@ public:
     return tmp;
   }
   TString OpenTGInputDialog(const char *mes){
-    return OpenTGInputDialog(mes, 0);
+    return OpenTGInputDialog(mes, -1);
   }
   
   TGListTreeItem *GetActiveMacro(){
