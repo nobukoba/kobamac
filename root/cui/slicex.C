@@ -37,8 +37,7 @@ void slicex(TH1* hist){
     TH1D *hout = new TH1D(hname, hist->GetTitle(), hist->GetNbinsX(),
 			  hist->GetXaxis()->GetXmin(), hist->GetXaxis()->GetXmax());
     for (Int_t i = 0; i <= hist->GetNbinsX()+1; i++) {
-      hout->Fill(hist->GetXaxis()->GetBinCenter(i),
-		 hist->GetBinContent(i,j));
+      hout->SetBinContent(i, hist->GetBinContent(i,j));
     }
   }
   save->cd();

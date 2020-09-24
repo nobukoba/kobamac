@@ -36,8 +36,7 @@ void slicey(TH1* hist){
     TH1D *hout = new TH1D(hname, hist->GetTitle(), hist->GetNbinsY(),
 			  hist->GetYaxis()->GetXmin(), hist->GetYaxis()->GetXmax());
     for (Int_t j = 0; j <= hist->GetNbinsY()+1; j++) {
-      hout->Fill(hist->GetYaxis()->GetBinCenter(j),
-		 hist->GetBinContent(i,j));
+      hout->SetBinContent(j,hist->GetBinContent(i,j));
     }
   }
   save->cd();
