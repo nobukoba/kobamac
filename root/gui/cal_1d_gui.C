@@ -5,8 +5,9 @@ void cal_1d_gui(){
   }
   TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
   if (gBrowserEx == 0) {return;}
-  TString str = gBrowserEx->OpenTGInputDialog("Peak energies (1173 1332 etc...)");
+  TString str = gBrowserEx->OpenTGInputDialog("Peak energies (1172 1332 etc...)");
   if (str.EqualTo("")) {return;}
+
   
   std::istringstream iss(str.Data());
   std::vector <Double_t> pars;
