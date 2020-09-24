@@ -158,8 +158,8 @@ void cal_1d_gui(){
   std::cout << "Parameters of inv. func. x = a*y + b:" << std::endl;
   std::cout << "a = " << a << std::endl;
   std::cout << "b = " << b << std::endl;
-  std::cout << "Different expression for b a:"<< std::endl;
-  std::cout << b << " " << a << std::endl;
+  std::cout << "Different expression for b, a:"<< std::endl;
+  std::cout << b << ", " << a << std::endl;
   gr->Delete();
   cal_func->Delete();
   /*funclist->Delete();*/
