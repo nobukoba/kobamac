@@ -28,11 +28,8 @@ void banx(TH1* hist, Double_t par0, Double_t par1){
     else if (j == j2) {factor = factor2;}
     else              {factor = 1.;}
     for (Int_t i = 0; i <= hist->GetNbinsX()+1; i++) {
-      hout->Fill(hist->GetXaxis()->GetBinCenter(i),
-		 hist->GetBinContent(i,j)*factor);
-      hout2->Fill(hist->GetXaxis()->GetBinCenter(i),
-		  hist->GetYaxis()->GetBinCenter(j),
-		  hist->GetBinContent(i,j)*factor);
+      hout->SetBinContent(i,hist->GetBinContent(i,j)*factor);
+      hout2->SetBinContent(i,j,hist->GetBinContent(i,j)*factor);
     }
   }
   hout->Draw();

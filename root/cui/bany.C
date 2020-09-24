@@ -28,11 +28,8 @@ void bany(TH1* hist, Double_t par0, Double_t par1){
     else if (i == i2) {factor = factor2;}
     else              {factor = 1.;}
     for (Int_t j = 0; j <= hist->GetNbinsY()+1; j++) {
-      hout->Fill(hist->GetYaxis()->GetBinCenter(j),
-		 hist->GetBinContent(i,j)*factor);
-      hout2->Fill(hist->GetXaxis()->GetBinCenter(i),
-		  hist->GetYaxis()->GetBinCenter(j),
-		  hist->GetBinContent(i,j)*factor);
+      hout->SetBinContent(j,hist->GetBinContent(i,j)*factor);
+      hout2->SetBinContent(i,j,hist->GetBinContent(i,j)*factor);
     }
   }
   hout->Draw();
