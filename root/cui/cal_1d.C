@@ -2,7 +2,7 @@ void cal_1d(TH1* hist, Double_t a, Double_t b){
   TString str;
   Int_t num = 1;
   while (1) {
-    str = Form("%s_cal%d",hist->GetName(),suffix,num);
+    str = Form("%s_cal%d",hist->GetName(),num);
     if (gROOT->Get(str.Data())==0) {break;}
     num++;
   }

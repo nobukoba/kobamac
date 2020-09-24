@@ -10,9 +10,9 @@ void cal_1d_gui(){
   
   std::istringstream iss(str.Data());
   std::vector <Double_t> pars;
-  Double_t par;
-  while (iss >> par) {
-    pars.push_back(par);
+  Double_t tmp;
+  while (iss >> tmp) {
+    pars.push_back(tmp);
   }
   if (pars.size() < 2) {
     std::cout << "The number of energies should be larger than 2. Exit."  << std::endl;
@@ -105,6 +105,12 @@ void cal_1d_gui(){
     par[4] = fgaus->GetParameter(2);
     funclist->Last()->Delete();
 
+    std::cout << "par[0]" << par[0] << std::endl;
+    std::cout << "par[1]" << par[1] << std::endl;
+    std::cout << "par[2]" << par[2] << std::endl;
+    std::cout << "par[3]" << par[3] << std::endl;
+    std::cout << "par[4]" << par[4] << std::endl;
+    
     TF1* fit_func = new TF1(Form("fit_eg_%d",j),"expo(0)+gaus(2)",x0,x1);
     fit_func->SetParameters(&(par[0]));
     fit_func->SetParName(0,"p0");
