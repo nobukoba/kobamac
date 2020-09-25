@@ -89,7 +89,7 @@ void cal_1d_gui(){
       j++;
     }
     
-    TF1* fgaus = new TF1(Form("fit_eg_init_gaus_%d",j), "gaus", x0+0.25*xrang, x1-0.25*xrang);
+    TF1* fgaus = new TF1(Form("fit_eg_init_gaus_%d",j), "gaus", x0+0.4*xrang, x1-0.4*xrang);
     Double_t ymax = hist->GetBinContent(hist->GetMaximumBin());
     fgaus->SetParLimits(0, 0., ymax*10000.);
     fgaus->SetParLimits(1, x0, x1);
@@ -105,8 +105,13 @@ void cal_1d_gui(){
     par[2] = fgaus->GetParameter(0) - base;
     par[3] = fgaus->GetParameter(1);
     par[4] = fgaus->GetParameter(2);
-    funclist->Last()->Delete();
+    /* funclist->Last()->Delete(); */
     
+    std::cout << "par[0]:" << par[0] << std::endl;
+    std::cout << "par[1]:" << par[1] << std::endl;
+    std::cout << "par[2]:" << par[2] << std::endl;
+    std::cout << "par[3]:" << par[3] << std::endl;
+    std::cout << "par[4]:" << par[4] << std::endl;
     
     TF1* fit_func = new TF1(Form("fit_eg_%d",j),"expo(0)+gaus(2)",x0,x1);
     fit_func->SetParameters(&(par[0]));
