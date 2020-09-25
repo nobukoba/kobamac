@@ -62,7 +62,7 @@ void cal_1d_gui(){
       gPad->SetCrosshair(0);
       return;
     }
-
+    
     TLine line;
     line.DrawLine(x0,hist->GetMinimum(),x0,hist->GetMaximum());
     Double_t x1, y1;
@@ -98,13 +98,15 @@ void cal_1d_gui(){
     
     Double_t par[5];
     /* par[0] = (y0*x1-y1*x0)/(x1-x0);
-       par[1] = (y1-y0)/(x1-x0);*/
+       par[1] = (y1-y0)/(x1-x0); */
     par[0] = (log(y0)*x1-log(y1)*x0)/(x1-x0);
     par[1] = (log(y1)-log(y0))/(x1-x0);
-    par[2] = fgaus->GetParameter(0);
+    Double_t base = exp(par[0] + par[1] * fgaus->GetParameter(1));
+    par[2] = fgaus->GetParameter(0) - base;
     par[3] = fgaus->GetParameter(1);
     par[4] = fgaus->GetParameter(2);
     funclist->Last()->Delete();
+    
     
     TF1* fit_func = new TF1(Form("fit_eg_%d",j),"expo(0)+gaus(2)",x0,x1);
     fit_func->SetParameters(&(par[0]));
