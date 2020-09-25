@@ -75,11 +75,9 @@ void cal_1d_gui(){
       x1 = tmpx;
     }
     
-    y0 = hist->GetBinContent(hist->GetBin(x0));
-    y1 = hist->GetBinContent(hist->GetBin(x1));
-    if (y0 == 0.){y0 = 1.;}
-    if (y1 == 0.){y1 = 1.;}
-    
+    y0 = hist->GetBinContent(hist->FindBin(x0));
+    y1 = hist->GetBinContent(hist->FindBin(x1));
+
     Double_t bwid  = hist->GetBinWidth(1);
     Double_t xrang = x1 - x0;
     
@@ -88,30 +86,41 @@ void cal_1d_gui(){
     while(funclist->FindObject(Form("fit_eg_%d",j))){
       j++;
     }
-    
-    TF1* fgaus = new TF1(Form("fit_eg_init_gaus_%d",j), "gaus", x0+0.4*xrang, x1-0.4*xrang);
+
+    Double_t par[5];
+    par[0] = (y0*x1-y1*x0)/(x1-x0);
+    par[1] = (y1-y0)/(x1-x0);
+    TF1* fgaus = new TF1(Form("fit_eg_init_gaus_%d",j), Form("(%f)+(%f)*x+gaus(0)", par[0], par[1]),
+			 x0+0.25*xrang, x1-0.25*xrang);
     Double_t ymax = hist->GetBinContent(hist->GetMaximumBin());
     fgaus->SetParLimits(0, 0., ymax*10000.);
     fgaus->SetParLimits(1, x0, x1);
-    fgaus->SetParLimits(2, xrang/10., xrang);
+    fgaus->SetParLimits(2, xrang/10., xrang/2.);
     hist->Fit(fgaus,"R+");
     
-    Double_t par[5];
-    /* par[0] = (y0*x1-y1*x0)/(x1-x0);
-       par[1] = (y1-y0)/(x1-x0); */
-    par[0] = (log(y0)*x1-log(y1)*x0)/(x1-x0);
-    par[1] = (log(y1)-log(y0))/(x1-x0);
-    Double_t base = exp(par[0] + par[1] * fgaus->GetParameter(1));
-    par[2] = fgaus->GetParameter(0) - base;
+    par[2] = fgaus->GetParameter(0);
     par[3] = fgaus->GetParameter(1);
     par[4] = fgaus->GetParameter(2);
-    /* funclist->Last()->Delete(); */
+    funclist->Last()->Delete();
     
-    std::cout << "par[0]:" << par[0] << std::endl;
-    std::cout << "par[1]:" << par[1] << std::endl;
-    std::cout << "par[2]:" << par[2] << std::endl;
-    std::cout << "par[3]:" << par[3] << std::endl;
-    std::cout << "par[4]:" << par[4] << std::endl;
+    TF1* fit_func0 = new TF1(Form("fit_p1g_%d",j),"pol1(0)+gaus(2)",x0,x1);
+    fit_func0->SetParameters(&(par[0]));
+    fit_func0->SetLineWidth(1);
+    hist->Fit(fit_func0,"R+");
+    y0 = fit_func0->GetParameter(0) + fit_func0->GetParameter(1) * x0;
+    y1 = fit_func0->GetParameter(0) + fit_func0->GetParameter(1) * x1;
+    if (y0 < 0) {
+      y0 = -y0;
+    }
+    if (y1 < 0) {
+      y1 = -y1;
+    }
+    par[0] = (log(y0)*x1-log(y1)*x0)/(x1-x0);
+    par[1] = (log(y1)-log(y0))/(x1-x0);
+    par[2] = fit_func0->GetParameter(2);
+    par[3] = fit_func0->GetParameter(3);
+    par[4] = fit_func0->GetParameter(4);
+    funclist->Last()->Delete();
     
     TF1* fit_func = new TF1(Form("fit_eg_%d",j),"expo(0)+gaus(2)",x0,x1);
     fit_func->SetParameters(&(par[0]));
@@ -166,7 +175,7 @@ void cal_1d_gui(){
   std::cout << "a = " << a << std::endl;
   std::cout << "b = " << b << std::endl;
   std::cout << "Different expression in C for {b, a}:"<< std::endl;
-  std::cout << "{"<< b << ", " << a << "}"<< std::endl;
+  std::cout << "{"<< b << ", " << a << "},"<< std::endl;
   gr->Delete();
   cal_func->Delete();
   /*funclist->Delete();*/

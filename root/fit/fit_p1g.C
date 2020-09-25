@@ -48,8 +48,8 @@ void fit_p1g() {
     x1 = tmpx;
   }
 
-  y0 = hist->GetBinContent(hist->GetBin(x0));
-  y1 = hist->GetBinContent(hist->GetBin(x1));
+  y0 = hist->GetBinContent(hist->FindBin(x0));
+  y1 = hist->GetBinContent(hist->FindBin(x1));
   if (y0 == 0.){y0 = 1.;}
   if (y1 == 0.){y1 = 1.;}
   
