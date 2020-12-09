@@ -154,32 +154,57 @@ void cal_1d_gui(){
     fit_pars[i]     = min;
     fit_epars[i]    = emin;    
   }
-  
-  TGraphErrors * gr = new TGraphErrors(pars.size(),
+
+  /*
+    TGraphErrors * gr = new TGraphErrors(pars.size(),
 				       &(pars[0]),  &(fit_pars[0]),
 				       &(epars[0]), &(fit_epars[0]));
   TF1* cal_func = new TF1("cal_func","pol1",pars[0], pars[pars.size()-1]);
   gr->Fit("cal_func");
+  Double_t p0 = cal_func->GetParameter(0);
+  Double_t p1 = cal_func->GetParameter(1);
+  Double_t a  = 1./p1;
+  Double_t b  = -p0/p1; */
+  
   /* gr->Draw("a*");
      gPad->Update();
      gPad->Modified(); */
   
-  Double_t p0 = cal_func->GetParameter(0);
-  Double_t p1 = cal_func->GetParameter(1);
-  Double_t a  = 1./p1;
-  Double_t b  = -p0/p1;
-  std::cout << "Fit parameters of y = p0 + p1*x:" << std::endl;
+  Double_t sum_xy  = 0.;
+  Double_t sum_x   = 0.;
+  Double_t sum_x2  = 0.;
+  Double_t sum_y   = 0.;
+  Double_t sum_one = 0.;
+  
+  for (Int_t i=0; i<fit_pars.size(); i++) {
+    sum_xy  += fit_pars[i]*pars[i]     / (fit_epars[i]*fit_epars[i]);
+    sum_x   += fit_pars[i]             / (fit_epars[i]*fit_epars[i]);
+    sum_x2  += fit_pars[i]*fit_pars[i] / (fit_epars[i]*fit_epars[i]);
+    sum_y   += pars[i]                 / (fit_epars[i]*fit_epars[i]);
+    sum_one += 1                       / (fit_epars[i]*fit_epars[i]);
+  }
+
+  Double_t deno = sum_one*sum_x2 - sum_x*sum_x;
+  Double_t p0   = (sum_one*sum_xy - sum_x*sum_y)  / deno;
+  Double_t p1   = (sum_x2*sum_y   - sum_x*sum_xy) / deno;
+  Double_t a    = 1./p1;
+  Double_t b    = -p0/p1;
+  
+  std::cout << "Parameters of y = p0 + p1*x:" << std::endl;
   std::cout << "p0 = " << p0 << std::endl;
   std::cout << "p1 = " << p1 << std::endl;
+  std::cout << "Different expression for p0 p1:"<< std::endl;
+  std::cout <<  p0 << " " << p1 << std::endl;
   std::cout << "Parameters of inv. func. x = a*y + b:" << std::endl;
   std::cout << "a = " << a << std::endl;
   std::cout << "b = " << b << std::endl;
   std::cout << "Different expression in C for {b, a}:"<< std::endl;
   std::cout << "{"<< b << ", " << a << "},"<< std::endl;
-  gr->Delete();
-  cal_func->Delete();
+  
+  /*gr->Delete();*/
+  /*cal_func->Delete();*/
   /*funclist->Delete();*/
   gROOT->ProcessLine(Form(".L %s/root/cui/cal_1d.C", gEnv->GetValue("KOBAMAC_DIR",".")));
-  gROOT->ProcessLine(Form("cal_1d((TH1*)%p,%f,%f)", hist,a,b));
+  gROOT->ProcessLine(Form("cal_1d((TH1*)%p,%f,%f)", hist,p0,p1));
   return;
 }
