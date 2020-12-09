@@ -89,6 +89,10 @@ void get_lin_cal_par(){
     std::cout << "i, pars[i], cnt[i], cnte[i]:" << i << ", " << pars[i] << ", " << cnt[i] << ", " << cnte[i] << std::endl;
   }
   
+  Double_t xy, x, x2, y, one;
+  
+  
   /* gROOT->ProcessLine(Form(".L %s/root/cui/scale.C", gEnv->GetValue("KOBAMAC_DIR","."))); */
   /* gROOT->ProcessLine(Form("scale((TH1*)%p,%f)", hist,par)); */
+  
 }
