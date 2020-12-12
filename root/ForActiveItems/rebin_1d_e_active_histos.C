@@ -6,9 +6,9 @@ void rebin_1d_e_active_histos(){
   std::istringstream iss(str.Data());
   Int_t par0;
   iss >> par0;
-  TIter next(gBrowserEx->GetListOfOrderedActiveHistos());
-  TH1 *hist;
-  while((hist = (TH1 *)next())){
+  TObjArray* arr = gBrowserEx->GetListOfOrderedActiveHistos();
+  for (Int_t i=0; i < arr->GetEntries(); i++){
+    TH1 *hist = (TH1*)arr->At(i);
     if (hist->InheritsFrom("TH2")) {
       std::cout << "This script can not handle a TH2 histogram." << std::endl;
       continue;

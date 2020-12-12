@@ -17,9 +17,9 @@ void multi_fit_photo_peak_for_active_results_pdf(){
   }
   TCanvas *canvas = gPad->GetCanvas();
   canvas->Print("fit_results.pdf[","pdf");
-  TIter next(gBrowserEx->GetListOfOrderedActiveHistos());
-  TH1 * hist;
-  while((hist = (TH1*)next())){
+  TObjArray* arr = gBrowserEx->GetListOfOrderedActiveHistos();
+  for (Int_t i=0; i < arr->GetEntries(); i++){
+    TH1 *hist = (TH1*)arr->At(i);
     if (hist==0) {
       std::cout << "hist is null." << std::endl;
       continue;

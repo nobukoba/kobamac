@@ -10,9 +10,9 @@
 void unzoom_xy_for_active(){
   TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
   if (!gBrowserEx) {return;}
-  TIter next(gBrowserEx->GetListOfOrderedActiveHistos());
-  TH1 * hist;
-  while((hist = (TH1*)next())){
+  TObjArray* arr = gBrowserEx->GetListOfOrderedActiveHistos();
+  for (Int_t i=0; i < arr->GetEntries(); i++){
+    TH1 *hist = (TH1*)arr->At(i);
     hist->GetXaxis()->UnZoom();
     hist->GetYaxis()->UnZoom();
   }
