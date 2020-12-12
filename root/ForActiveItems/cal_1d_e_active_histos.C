@@ -1,4 +1,4 @@
-void cal_1d_active_histos(){
+void cal_1d_e_active_histos(){
   TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
   if (!gBrowserEx) {return;}
   TString str = gBrowserEx->OpenTGInputDialog("Enter calibration parameters of\ny = p0 + p1*x\nFormat: p0 p1 (%f %f)",2);
@@ -13,8 +13,8 @@ void cal_1d_active_histos(){
       std::cout << "This script can not handle a TH2 histogram." << std::endl;
       continue;
     }
-    gROOT->ProcessLine(Form(".L %s/root/cui/cal_1d.C", gEnv->GetValue("KOBAMAC_DIR",".")));
-    gROOT->ProcessLine(Form("cal_1d((TH1*)%p,%f,%f,0)", hist,par0,par1));
+    gROOT->ProcessLine(Form(".L %s/root/cui/cal_1d_e.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+    gROOT->ProcessLine(Form("cal_1d_e((TH1*)%p,%f,%f)",hist,par0,par1));
   }
   return;
 }
