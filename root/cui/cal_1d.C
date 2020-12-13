@@ -1,4 +1,4 @@
-void cal_1d(TH1* hist, Double_t a, Double_t b){
+void cal_1d(TH1* hist, Double_t par0, Double_t par1, Int_t erropt=0){
   TString str;
   Int_t num = 1;
   while (1) {
@@ -18,12 +18,14 @@ void cal_1d(TH1* hist, Double_t a, Double_t b){
   gROOT->cd();
   TH1* hout = new TH1D(str.Data(),hist->GetTitle(),
 		       hist->GetXaxis()->GetNbins(),
-		       a*hist->GetXaxis()->GetXmin()+b,
-		       a*hist->GetXaxis()->GetXmax()+b);
+		       par0+par1*hist->GetXaxis()->GetXmin(),
+		       par0+par1*hist->GetXaxis()->GetXmax());
   save->cd();
   for (int i=0; i <= hist->GetXaxis()->GetNbins() + 1; i++){
     hout->SetBinContent(i,hist->GetBinContent(i));
-    /*hout->SetBinError(i,hist->GetBinError(i));*/
+    if (erropt == 1) {
+      hout->SetBinError(i,hist->GetBinError(i));
+    }
   }
   hout->SetEntries(hist->GetEntries());
   hout->Draw("colz");

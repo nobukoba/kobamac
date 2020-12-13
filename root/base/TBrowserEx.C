@@ -119,8 +119,8 @@ protected:
   TGListTree       *hist_fListTree;
   TList            hist_fListTree_active_items;
   TList            hist_fListTree_active_histos;
-  TList            list_of_active_histos;
-  TList            list_of_ordered_active_histos;
+  TObjArray        list_of_active_histos;
+  TObjArray        list_of_ordered_active_histos;
   TTimer*          timer;
   Int_t            current_hist_number;
   TString          initial_working_dir;
@@ -1118,7 +1118,7 @@ public:
     return 0;
   }
 
-  TList *GetListOfActiveHistos(){
+  TObjArray *GetListOfActiveHistos(){
     TGListTreeItem *cur_ListTreeItem = hist_fListTree->GetFirstItem();
     list_of_active_histos.Clear();
     while(cur_ListTreeItem){
@@ -1136,7 +1136,7 @@ public:
     return &list_of_active_histos;
   }
   
-  TList *GetListOfOrderedActiveHistos(){
+  TObjArray *GetListOfOrderedActiveHistos(){
     list_of_ordered_active_histos.Clear();
     TIter next(&hist_fListTree_active_items);
     TObject * obj;

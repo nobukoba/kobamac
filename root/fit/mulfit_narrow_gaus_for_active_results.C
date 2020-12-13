@@ -17,9 +17,9 @@ void mulfit_narrow_gaus_for_active_results(){
     return;
   }
   TCanvas *canvas = gPad->GetCanvas();
-  TIter next(gBrowserEx->GetListOfOrderedActiveHistos());
-  TH1 *hist;
-  while((hist = (TH1 *)next())){
+  TObjArray* arr = gBrowserEx->GetListOfOrderedActiveHistos();
+  for (Int_t i=0; i < arr->GetEntries(); i++){
+    TH1 *hist = (TH1*)arr->At(i);
     if (hist==0) {
       std::cout << "hist is null." << std::endl;
       continue;

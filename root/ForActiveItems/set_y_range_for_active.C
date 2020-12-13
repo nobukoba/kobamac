@@ -13,9 +13,9 @@ void set_y_range_for_active(){
   Double_t par0, par1;
   iss >> par0 >> par1;
   gROOT->ProcessLine(Form(".L %s/root/cui/set_y_range.C", gEnv->GetValue("KOBAMAC_DIR",".")));
-  TIter next(gBrowserEx->GetListOfOrderedActiveHistos());
-  TH1 * hist;
-  while((hist = (TH1*)next())){
+  TObjArray* arr = gBrowserEx->GetListOfOrderedActiveHistos();
+  for (Int_t i=0; i < arr->GetEntries(); i++){
+    TH1 *hist = (TH1*)arr->At(i);
     gROOT->ProcessLine(Form("set_y_range((TH1*)%p,%f,%f)",hist,par0,par1));
   }
   return;

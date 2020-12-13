@@ -10,10 +10,10 @@
 void reverse_active_histos(){
   TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
   if (!gBrowserEx) {return;}
-  TIter next(gBrowserEx->GetListOfOrderedActiveHistos());
-  TH1 * hist;
   gROOT->ProcessLine(Form(".L %s/root/cui/reverse.C", gEnv->GetValue("KOBAMAC_DIR",".")));
-  while((hist = (TH1*)next())){
+  TObjArray* arr = gBrowserEx->GetListOfOrderedActiveHistos();
+  for (Int_t i=0; i < arr->GetEntries(); i++){
+    TH1 *hist = (TH1*)arr->At(i);
     gROOT->ProcessLine(Form("reverse((TH1*)%p)",hist));
   }
   return;

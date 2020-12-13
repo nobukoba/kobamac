@@ -9,9 +9,9 @@
 void PrintFitResultsForActive(){
   TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
   if (!gBrowserEx) {return;}
-  TIter next(gBrowserEx->GetListOfOrderedActiveHistos());
-  TH1 * hist;
-  while((hist = (TH1*)next())){
+  TObjArray* arr = gBrowserEx->GetListOfOrderedActiveHistos();
+  for (Int_t i=0; i < arr->GetEntries(); i++){
+    TH1 *hist = (TH1*)arr->At(i);
     TList *funclist = hist->GetListOfFunctions();
     if(funclist == 0){
       //std::cout << "The GetListOfFunctions() is null. The script is terminated." << std::endl;

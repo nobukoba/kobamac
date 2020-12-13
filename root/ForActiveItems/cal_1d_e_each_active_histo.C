@@ -1,4 +1,4 @@
-void cal_1d_each_active_histo(){
+void cal_1d_e_each_active_histo(){
   TBrowserEx *gBrowserEx = (TBrowserEx *)gROOT->ProcessLine("gBrowserEx;");
   if (!gBrowserEx) {return;}
   TObjArray* arr = gBrowserEx->GetListOfOrderedActiveHistos();
@@ -18,8 +18,8 @@ void cal_1d_each_active_histo(){
     std::istringstream iss(retstr.Data());
     Double_t par0, par1;
     iss >> par0 >> par1;
-    gROOT->ProcessLine(Form(".L %s/root/cui/cal_1d.C", gEnv->GetValue("KOBAMAC_DIR",".")));
-    gROOT->ProcessLine(Form("cal_1d((TH1*)%p,%f,%f)", hist,par0,par1));
+    gROOT->ProcessLine(Form(".L %s/root/cui/cal_1d_e.C", gEnv->GetValue("KOBAMAC_DIR",".")));
+    gROOT->ProcessLine(Form("cal_1d_e((TH1*)%p,%f,%f)", hist,par0,par1));
   }
   return;
 }
