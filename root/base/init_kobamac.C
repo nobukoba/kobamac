@@ -31,7 +31,7 @@ void init_kobamac(){
       }
     }
   }
-  cmd = Form("objdump -p %s/root/base/TBrowserEx_C.so | grep RUNPATH | awk '{print $2}'",   gEnv->GetValue("KOBAMAC_DIR","."));
+  cmd = Form("objdump -p %s/root/base/TBrowserEx_C.so | grep -e RUNPATH -e RPATH | awk '{print $2}'",   gEnv->GetValue("KOBAMAC_DIR","."));
   TString solib = gSystem->GetFromPipe(cmd.Data());
   
   TString sharedlib = gSystem->GetMakeSharedLib();
