@@ -11,11 +11,51 @@ void init_kobamac(){
   str.Resize(str.Length()-10); /* Remove the string "/root/base" at the last */
   gEnv->SetValue("KOBAMAC_DIR",str.Data());
   std::cout <<"ini_kobamac.C: KOBAMAC_DIR=" << gEnv->GetValue("KOBAMAC_DIR","") << std::endl;
+
   
   cmd = Form("find %s -type d -not -path '*/\\.*' | tr -d '\r' | tr '\n' ':' | sed -e 's/:$//'",gEnv->GetValue("KOBAMAC_DIR","."));
   str = gSystem->GetFromPipe(cmd.Data());
   gROOT->SetMacroPath(Form("%s:%s", gROOT->GetMacroPath(), str.Data()));
-  gROOT->ProcessLine(Form(".L %s/root/base/TBrowserEx.C+",   gEnv->GetValue("KOBAMAC_DIR",".")));
+
+  TString rootlib;
+  if (gROOT->GetVersionInt() >= 60000) {
+    rootlib = gROOT->GetLibDir(); 
+  }else{
+    rootlib = gEnv->GetValue("Unix.*.Root.DynamicPath","");
+    TObjArray* objarr = rootlib.Tokenize(":");
+    for (Int_t i = 0; i < objarr->GetEntries(); i++) {
+      TObjString* objstr = (TObjString*) objarr->At(i);
+      rootlib = objstr->GetString();
+      if (rootlib.Contains("lib")){
+	break;
+      }
+    }
+  }
+  cmd = Form("objdump -p %s/root/base/TBrowserEx_C.so | grep RUNPATH | awk '{print $2}'",   gEnv->GetValue("KOBAMAC_DIR","."));
+  TString solib = gSystem->GetFromPipe(cmd.Data());
+  
+  TString sharedlib = gSystem->GetMakeSharedLib();
+  TObjArray* sharedlibobjarr = sharedlib.Tokenize(":");
+  Bool_t sharedlibbool = false;
+  for (Int_t i = 0; i < sharedlibobjarr->GetEntries(); i++) {
+    TObjString* objstr = (TObjString*) sharedlibobjarr->At(i);
+    TString libstr = objstr->GetString();
+    if (libstr.Contains("-Wl,-rpath,")){
+      sharedlibbool = true;
+      break;
+    }
+  }
+  if (!sharedlibbool) {
+    TString tmpstr = gSystem->GetMakeSharedLib();
+    tmpstr.ReplaceAll("$ObjectFiles",Form("$ObjectFiles -Wl,-rpath,%s",rootlib.Data()));
+    gSystem->SetMakeSharedLib(tmpstr.Data());
+  }
+  
+  if (solib.EqualTo(rootlib)){
+    gROOT->ProcessLine(Form(".L %s/root/base/TBrowserEx.C+",   gEnv->GetValue("KOBAMAC_DIR",".")));    
+  }else{
+    gROOT->ProcessLine(Form(".L %s/root/base/TBrowserEx.C++",   gEnv->GetValue("KOBAMAC_DIR",".")));    
+  }
   gROOT->ProcessLine(Form(".L %s/root/base/tbr.C",           gEnv->GetValue("KOBAMAC_DIR",".")));
   gROOT->ProcessLine(Form(".L %s/root/base/WaitOneClickX.C", gEnv->GetValue("KOBAMAC_DIR",".")));
   gROOT->ProcessLine(Form(".L %s/root/base/WaitOneClickY.C", gEnv->GetValue("KOBAMAC_DIR",".")));
