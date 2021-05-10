@@ -55,14 +55,15 @@ void fit_BW(){
     y_BW2.push_back(tmp2);
   }
   Int_t nrows = x_exp.size();
-  for (Int_t i; i < nrows; i++) {
-    std::cout << x_exp[i] << ", "
-	      << y_exp[i] << ", "
-	      << y_BW0[i] << ", "
-	      << y_BW1[i] << ", "
-	      << y_BW2[i]
-	      << std::endl;
-  }
+  /* For debug
+     for (Int_t i; i < nrows; i++) {
+     std::cout << x_exp[i] << ", "
+     << y_exp[i] << ", "
+     << y_BW0[i] << ", "
+     << y_BW1[i] << ", "
+     << y_BW2[i]
+     << std::endl;
+     } */
   /* Prepare histograms containing the text data */
   h_exp = new TH1D("h_exp", "h_exp", nrows, 0., 20.);
   h_BW0 = new TH1D("h_BW0", "h_BW0", nrows, 0., 20.);
