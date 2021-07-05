@@ -77,11 +77,19 @@ void cagra_nim_coin_208pb_prox() {
   TH2 *hcln2 = (TH2*)hcln->Clone("hcln2");
   TGraph *gr = new TGraph();
   Double_t hwid = 0.05;
-  gr->SetPoint(0, 0.,  hwid);
-  gr->SetPoint(1, 0., -hwid);
+  gr->SetPoint(0, 0., 0.+hwid);
+  gr->SetPoint(1, 0., 0.-hwid);
   gr->SetPoint(2,10.,10.-hwid);
   gr->SetPoint(3,10.,10.+hwid);
-  gr->SetPoint(4, 0.,  0.1);
+  gr->SetPoint(4, 0., 0.+hwid);
+  TGraph *gr2 = new TGraph();
+  Double_t hwid = 0.05;
+  gr2->SetPoint(0, 2.614522, 2.614522+hwid-2.614522);
+  gr2->SetPoint(1, 2.614522, 2.614522-hwid-2.614522);
+  gr2->SetPoint(2,10.,10.-hwid-2.614522);
+  gr2->SetPoint(3,10.,10.+hwid-2.614522);
+  gr2->SetPoint(4, 2.614522, 2.614522+hwid-2.614522);
+  gr2->SetLineStyle(7);
   TCutG *cutg = new TCutG("CUTG",gr->GetN(),
 			  gr->GetX(),
 			  gr->GetY());
@@ -156,6 +164,7 @@ void cagra_nim_coin_208pb_prox() {
   c1->Update();
   TPaletteAxis *palette = (TPaletteAxis*)hcln->GetListOfFunctions()->FindObject("palette");
   gr->Draw("l");
+  gr2->Draw("l");
   //palette->SetLabelOffset(0.1);
   //palette->SetTitleOffset(0.1);
   palette->SetTitleSize(0.1);
@@ -168,12 +177,20 @@ void cagra_nim_coin_208pb_prox() {
   //TCanvas 
   //(GXCEg_rgr_tg_thc_lw_add1_cln1);
   TLatex latex;
-  latex.SetTextSize(0.10);
+  latex.SetTextSize(0.08);
   latex.SetTextAlign(13);  //align at top
   p1->cd();
-  latex.DrawLatexNDC(.20,.90,"a)");
+  latex.DrawLatexNDC(.20,.90,"a) {}^{208}Pb(#it{p}#kern[-0.5]{,}#kern[0.1]{#it{p'}#gamma})");
+  latex.DrawLatexNDC(.20,.80,"   #it{E}_{#it{p}} = 80 MeV");
+  latex.DrawLatexNDC(.20,.70,"   #it{#theta}_{#it{s}} = 4.5^{o}");
   p2->cd();
   latex.DrawLatexNDC(.20,.975,"b)");
-  c1->Print("coin_matrix_208pb.pdf");
+  latex.SetTextSize(0.06);
+  latex.SetTextAlign(21);
+  latex.DrawLatex(4.84+0.05,40,"1^{-}");
+  latex.DrawLatex(5.51+0.05,35,"1^{-}");
+  latex.DrawLatex(6.26+0.05,25,"1^{-}");
+  latex.DrawLatex(7.33+0.05,10,"1^{-}");
+  c1->Print("coin_matrix_208pb_20210705.pdf");
   return;
 }
