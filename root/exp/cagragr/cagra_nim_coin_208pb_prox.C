@@ -182,7 +182,7 @@ void cagra_nim_coin_208pb_prox() {
   p1->cd();
   latex.DrawLatexNDC(.20,.90,"a) {}^{208}Pb(#it{p}#kern[-0.5]{,}#kern[0.1]{#it{p'}#gamma})");
   latex.DrawLatexNDC(.20,.80,"   #it{E}_{#it{p}} = 80 MeV");
-  latex.DrawLatexNDC(.20,.70,"   #it{#theta}_{#it{s}} = 4.5^{o}");
+  latex.DrawLatexNDC(.20,.70,"   #it{#theta}_{#it{s}} = 8.8^{o}");
   p2->cd();
   latex.DrawLatexNDC(.20,.975,"b)");
   latex.SetTextSize(0.06);
