@@ -18,7 +18,7 @@ Double_t func(Double_t *x, Double_t *par){
 void fit_BW(){
   /* Open text files*/
   std::ifstream ifs_exp("exp.txt");
-  std::ifstream ifs_BW0("BW_gs.txt");
+  std::ifstream ifs_BW0("BW_gs_new.txt");
   std::ifstream ifs_BW1("BW_1st.txt");
   std::ifstream ifs_BW2("BW_2nd.txt");
   /* Contents of the files will be stored in the folloiwing vectors*/
@@ -85,7 +85,7 @@ void fit_BW(){
   TF1 *f_fit = new TF1("func",func, 11.5, 17.5, 3);
   f_fit->SetNpx(1000);                  /* Step size when the function is drawn */
   f_fit->SetParameters(0.01, 0.1, 0.1); /* Initial parameters for 3 parameters */
-  f_fit->SetParLimits(0, 0.03, 1000.);  /* Set a Limits for the 1st parameter */
+  f_fit->SetParLimits(0, 0.01, 1000.);  /* Set a Limits for the 1st parameter */
   f_fit->SetLineColor(kBlack);          /* Line color */
   h_exp->Draw();
   h_exp->Fit("func","R");               /* "R" restricts the fit range of 11.5 < x < 17.5 */
