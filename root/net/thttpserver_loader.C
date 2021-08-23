@@ -1,8 +1,9 @@
 void GotoNode(TXMLEngine &xml, XMLNodePointer_t node, Int_t level,
 	      TString baseurl, TString fulldir, TDirectoryFile* curdir) {
-  TDirectoryFile* newdir = 0;
   TString attr_kind = xml.GetAttr(node,"_kind");
   TString attr_name = xml.GetAttr(node,"_name");
+  TString attr_typename = xml.GetAttr(node,"_typename");
+  TDirectoryFile* newdir = 0;
   if (attr_kind.BeginsWith("ROOT.TH")) {
     TString cmd = "";
     if (level == 1) {
@@ -18,9 +19,12 @@ void GotoNode(TXMLEngine &xml, XMLNodePointer_t node, Int_t level,
     TObject *obj = 0;
     curdir->cd();
     TBufferJSON::FromJSON(obj, result);
-    if (obj) obj->Clone();
-  }else{
-    if ( (level == 1)&& baseurl.EndsWith("/")) {
+    if (obj) {
+      obj->Clone();
+    }
+  }else if(attr_typename.EqualTo("")){
+    /*}else{*/
+    if ((level == 1) && baseurl.EndsWith("/")) {
       newdir = curdir;
     }else{
       curdir->cd();
