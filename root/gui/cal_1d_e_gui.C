@@ -185,8 +185,8 @@ void cal_1d_e_gui(){
   }
 
   Double_t deno = sum_one*sum_x2 - sum_x*sum_x;
-  Double_t p0   = (sum_one*sum_xy - sum_x*sum_y)  / deno;
-  Double_t p1   = (sum_x2*sum_y   - sum_x*sum_xy) / deno;
+  Double_t p1   = (sum_one*sum_xy - sum_x*sum_y)  / deno;
+  Double_t p0   = (sum_x2*sum_y   - sum_x*sum_xy) / deno;
   Double_t a    = 1./p1;
   Double_t b    = -p0/p1;
   
