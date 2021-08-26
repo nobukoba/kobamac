@@ -6,6 +6,7 @@
   Version 1.00 03-MAY-2020 by Nobu Kobayashi
   Version 1.01 05-MAY-2020 by Nobu Kobayashi
   Version 1.02 20-SEP-2020 by Nobu Kobayashi
+  Version 1.03 12-DEC-2020 by Nobu Kobayashi
 
   03-MAY-2020
 
@@ -51,6 +52,11 @@
   "./TBrowserEx.C:302:5: error: use of undeclared identifier
   'gVirtualX' ./TBrowserEx.C:337:91: error: member access into
   incomplete type 'TObjString'"
+
+  12-Dec-2020
+
+  TList was removed. This destractor deletes the objects in the list
+  when the list instance is deleted.
   
 */
 
