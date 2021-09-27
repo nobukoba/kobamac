@@ -13,40 +13,42 @@
 #include "TGFileDialog.h"
 
 void convert_file(TString pre_file_name, TString cur_file_name){
+  TString pre_file_name_save = pre_file_name;
   TString cur_file_name_save = cur_file_name;
   pre_file_name = gSystem->BaseName(pre_file_name.Data());
   cur_file_name = gSystem->BaseName(cur_file_name.Data());
   cur_file_name.ReplaceAll(".","_");
   pre_file_name.ReplaceAll(".","_");
-  TH1* cur_hist_tmp = gROOT->TDirectory::FindObject(Form("%s_ch1",cur_file_name.Data()));
+  TH1* cur_hist_tmp = (TH1*)gROOT->TDirectory::FindObject(Form("%s_ch1",cur_file_name.Data()));
   if (cur_hist_tmp != 0) {
     return;
   }
-  TH1* pre_hist_ch1;
-  TH1* pre_hist_ch2;
-  TH1* pre_hist_ch3;
-  TH1* pre_hist_ch4;
   if(pre_file_name != ""){
-    pre_hist_ch1 = gROOT->TDirectory::FindObject(Form("%s_ch1",pre_file_name.Data()));
-    pre_hist_ch2 = gROOT->TDirectory::FindObject(Form("%s_ch2",pre_file_name.Data()));
-    pre_hist_ch3 = gROOT->TDirectory::FindObject(Form("%s_ch3",pre_file_name.Data()));
-    pre_hist_ch4 = gROOT->TDirectory::FindObject(Form("%s_ch4",pre_file_name.Data()));
-    if(pre_hist_ch1 == 0){
+    TH1* pre_hist_tmp = (TH1*)gROOT->TDirectory::FindObject(Form("%s_ch1",pre_file_name.Data()));
+    if(pre_hist_tmp == 0){
       std::cout << "Hist: " << Form("%s_ch1",pre_file_name.Data()) << "does not exist." << std::endl;
       return;
     }
   }
+  std::cout << "processing " << cur_file_name.Data() << std::endl;
   TH1* cur_hist_ch1 = new TH1D(Form("%s_ch1",cur_file_name.Data()),cur_file_name.Data(),16384,0,16384);
   TH1* cur_hist_ch2 = new TH1D(Form("%s_ch2",cur_file_name.Data()),cur_file_name.Data(),16384,0,16384);
   TH1* cur_hist_ch3 = new TH1D(Form("%s_ch3",cur_file_name.Data()),cur_file_name.Data(),16384,0,16384);
   TH1* cur_hist_ch4 = new TH1D(Form("%s_ch4",cur_file_name.Data()),cur_file_name.Data(),16384,0,16384);
-  std::ifstream ifs(cur_file_name_save.Data());
-  std::string buf;
-  TString tbuf;
-  while(ifs && getline(ifs, buf)){ /* getline is very slow in CINT!*/
-    tbuf = buf;
-    if(tbuf.BeginsWith("[Data]")){
-      getline(ifs, buf);
+  std::ifstream pre_ifs(pre_file_name_save.Data());
+  std::ifstream cur_ifs(cur_file_name_save.Data());
+  std::string pre_buf;
+  std::string cur_buf;
+  TString pre_tbuf;
+  TString cur_tbuf;
+  while(cur_ifs && pre_ifs &&
+	getline(cur_ifs, cur_buf) &&
+	getline(pre_ifs, pre_buf)){ /* getline is very slow in CINT!*/
+    pre_tbuf = pre_buf;
+    cur_tbuf = cur_buf;
+    if(cur_tbuf.BeginsWith("[Data]")){
+      getline(cur_ifs, cur_buf);
+      getline(pre_ifs, pre_buf);
       break;
     }
   }
@@ -63,29 +65,26 @@ void convert_file(TString pre_file_name, TString cur_file_name){
      std::istringstream iss(buf);
      iss >> xmin >> xmax;
      Int_t nbin = xmax - xmin; */
-
+  
   Int_t iline = 0;
-  Double_t val[5];
-  while(ifs && getline(ifs, buf)){
+  Double_t cur_val[5];
+  Double_t pre_val[5];
+  while(cur_ifs && pre_ifs &&
+	getline(cur_ifs, cur_buf) &&
+	getline(pre_ifs, pre_buf) ){
     iline++;
-    tbuf = buf;
-    tbuf.ReplaceAll(","," ");
-    std::istringstream iss(tbuf.Data());
-    iss >> val[0] >> val[1] >> val[2] >> val[3] >> val[4];
-    double con_ch1 = 0.;
-    double con_ch2 = 0.;
-    double con_ch3 = 0.;
-    double con_ch4 = 0.;
-    if(pre_file_name != ""){
-      con_ch1 = pre_hist_ch1->GetBinContent(iline);
-      con_ch2 = pre_hist_ch2->GetBinContent(iline);
-      con_ch3 = pre_hist_ch3->GetBinContent(iline);
-      con_ch4 = pre_hist_ch4->GetBinContent(iline);
-    }
-    cur_hist_ch1->SetBinContent(iline,val[1]-con_ch1);
-    cur_hist_ch2->SetBinContent(iline,val[2]-con_ch2);
-    cur_hist_ch3->SetBinContent(iline,val[3]-con_ch3);
-    cur_hist_ch4->SetBinContent(iline,val[4]-con_ch4);
+    pre_tbuf = pre_buf;
+    cur_tbuf = cur_buf;
+    pre_tbuf.ReplaceAll(","," ");
+    cur_tbuf.ReplaceAll(","," ");
+    std::istringstream pre_iss(pre_tbuf.Data());
+    std::istringstream cur_iss(cur_tbuf.Data());
+    pre_iss >> pre_val[0] >> pre_val[1] >> pre_val[2] >> pre_val[3] >> pre_val[4];
+    cur_iss >> cur_val[0] >> cur_val[1] >> cur_val[2] >> cur_val[3] >> cur_val[4];
+    cur_hist_ch1->SetBinContent(iline,cur_val[1]-pre_val[1]);
+    cur_hist_ch2->SetBinContent(iline,cur_val[2]-pre_val[2]);
+    cur_hist_ch3->SetBinContent(iline,cur_val[3]-pre_val[3]);
+    cur_hist_ch4->SetBinContent(iline,cur_val[4]-pre_val[4]);
   }
   return;
 }
