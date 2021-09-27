@@ -14,8 +14,8 @@
 
 void convert_file(TString pre_file_name, TString cur_file_name){
   TString cur_file_name_save = cur_file_name;
-  pre_file_name = gSystem->BaeName(pre_file_name.Data());
-  cur_file_name = gSystem->BaeName(cur_file_name.Data());
+  pre_file_name = gSystem->BaseName(pre_file_name.Data());
+  cur_file_name = gSystem->BaseName(cur_file_name.Data());
   cur_file_name.ReplaceAll(".","_");
   pre_file_name.ReplaceAll(".","_");
   TH1* cur_hist_tmp = gROOT->TDirectory::FindObject(Form("%s_ch1",cur_file_name.Data()));
@@ -92,7 +92,7 @@ void convert_file(TString pre_file_name, TString cur_file_name){
 
 void online_apg7400a() {
   std::cout << std::endl << "Macro: online_apg7400a.C" << std::endl;
-  TString result = gSystem->GetFromPipe("ls | sort");
+  TString result = gSystem->GetFromPipe("ls *.csv| sort");
   std::stringstream ss(result.Data());
   std::string str = "";
   TString pre_file_name = "";
