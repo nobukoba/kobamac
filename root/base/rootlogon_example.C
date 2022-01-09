@@ -42,6 +42,7 @@
   gStyle->SetTitleFont(132,"");
   gStyle->SetTextFont(132);
   gStyle->SetStatFont(132);
+  gStyle->SetLegendFont(132);
   gStyle->GetAttDate()->SetTextFont(132);
   gStyle->SetTitleSize(0.04,"XYZ");
   gStyle->SetTitleSize(0.04,"");
