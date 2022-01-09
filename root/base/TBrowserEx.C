@@ -547,7 +547,7 @@ public:
     TString opt = lt->GetParent()->GetParent()->GetParent()->GetDrawOption();
     Int_t isel = hist_browser->GetDrawOptionPointer()->GetSelected();
     if ((opt == "same")||
-	((isel<=16)&&(isel>=23))){
+	((isel>=16)&&(isel<=23))){
       return;
     }
     TCanvas* canvas = gPad->GetCanvas();
@@ -569,7 +569,7 @@ public:
     }
   }
   
-  void MyClickedForHistFileBrowser(TGListTreeItem *entry, Int_t btn, UInt_t mask, Int_t x, Int_t y){
+  void MyClickedForHistFileBrowser(TGListTreeItem *entry, Int_t /*btn*/, UInt_t mask, Int_t /*x*/, Int_t /*y*/){
     if((!(mask & kKeyShiftMask))&&
        (!(mask & kKeyControlMask))){
       hist_fListTree_active_items.Delete();
@@ -691,14 +691,14 @@ public:
     }
   }
   
-  void SetCannotMove(TGListTreeItem *item, Int_t, UInt_t, Int_t, Int_t){
+  void SetCannotMove(TGListTreeItem */*item*/, Int_t, UInt_t, Int_t, Int_t){
     if (!gPad) {std::cout << "There is no gPad." << std::endl; return;}
     /* TCanvas* canvas = gPad->GetCanvas(); */
     gPad->GetFrame()->SetBit(TBox::kCannotMove);
     return;
   }
   
-  void change_canvas(Int_t event, Int_t x, Int_t y, TObject* selected) {
+  void change_canvas(Int_t event, Int_t /*x*/, Int_t /*y*/, TObject* selected) {
     TCanvas *c = (TCanvas*)gTQSender;
     /*    printf("Canvas %s: event=%d, x=%d, y=%d, selected=%s\n", c->GetName(),
           event, x, y, selected->IsA()->GetName()); */
@@ -1067,7 +1067,7 @@ public:
     return;
   }
 
-  TString OpenTGInputDialog(const char *mes, const char *ini, Int_t no){
+  TString OpenTGInputDialog(const char *mes, const char *ini, Int_t /*no*/){
     char retstr[256];
     new TGInputDialog(gClient->GetRoot(),0,mes,ini,retstr);
     if(retstr[0] == 0 && retstr[1] == 0){
