@@ -1,0 +1,180 @@
+ macro main
+* exe calc
+* exe plot1
+   exe weight
+* exe plot2
+return
+ 
+ macro calc
+   hi/del *
+   hfet 37mg_each_state.hbk
+   
+   hid = 101
+   xbins = $hinfo([hid],'xbins')
+   xmax = $hinfo([hid],'xmax')
+   xmin = $hinfo([hid],'xmin')
+   dx  = ([xmax] - [xmin])/[xbins]
+   
+   vec/cre xx([xbins]) 'r'
+   get/abs [hid] xx
+   
+   lim1 = 3
+   lim2 = 3
+   lim3 = 3
+   lim4 = 10
+   lim5 = 10
+   do i = 1, 5
+     do j = 1, [lim[i]]
+       hid = [i] * 100 + [j]
+       vec/cre wfb[hid]([xbins]) 'r'
+       get/con [hid] wfb[hid]
+       sigma r2[hid]=xx**2*wfb[hid]**2
+       sigma wf2[hid]=wfb[hid]**2
+       sigma rms[hid]=sqrt(vsum(r2[hid])*[dx])
+       1d 1[hid] wf2[hid] [xbins] [xmin] [xmax]
+       1d 2[hid] r2[hid] [xbins] [xmin] [xmax]
+       put/con 1[hid] wf2[hid]
+       put/con 2[hid] r2[hid]
+     enddo
+   enddo
+
+   do i = 1, 5
+     do j = 1, [lim[i]]
+       hid = [i] * 100 + [j]
+       mess rms[hid] $htitle(1[hid]) $rsigma(rms[hid](1))
+     enddo
+   enddo
+ return
+ 
+ macro plot1
+   vec/cre ebsd(3) r 3400 3410 3480
+   vec/cre rs12(3) r 4.61049 4.60754 4.58723
+   vec/cre rd32(3) r 3.97507 3.97373 3.96451
+   vec/cre rd52(3) r 3.97079 3.96946 3.96025
+   
+   vec/cre ebpf(10) r 0190 0990 2120 2410 2520 2660 2870 3020 3140 3250
+   vec/cre rp32(10) r 8.23646 5.93766 5.16677 5.05049 5.01083 4.96334 4.89762 4.8542 4.82134 4.79254
+   vec/cre rf72(10) r 4.49329 4.32154 4.17306 4.14307 4.13229 4.119 4.0999 4.08682 4.07666 4.06758
+   
+   sigma ebsd = ebsd / 1000
+   sigma ebpf = ebpf / 1000
+   null 0 4 0 10
+   graph  3 ebsd rs12 l
+   graph  3 ebsd rd32 l
+   graph  3 ebsd rd52 l
+   graph 10 ebpf rp32 l
+   graph 10 ebpf rf72 l
+   atit 'S?n! (MeV)' 'RMS (fm)' ! 222
+ return
+ 
+ macro weight
+ rms1  = 4.61049; weight1  = 0.000
+ rms2  = 4.60754; weight2  = 0.000
+ rms3  = 4.58723; weight3  = 0.000
+ rms4  = 3.97507; weight4  = 0.381
+ rms5  = 3.97373; weight5  = 0.000
+ rms6  = 3.96451; weight6  = 0.010
+ rms7  = 3.97079; weight7  = 0.007
+ rms8  = 3.96946; weight8  = 0.000
+ rms9  = 3.96025; weight9  = 0.000
+ rms10 = 8.23646; weight10 = 0.443
+ rms11 = 5.93766; weight11 = 0.045
+ rms12 = 5.16677; weight12 = 0.000
+ rms13 = 5.05049; weight13 = 0.000
+ rms14 = 5.01083; weight14 = 0.121
+ rms15 = 4.96334; weight15 = 0.015
+ rms16 = 4.89762; weight16 = 0.030
+ rms17 = 4.8542 ; weight17 = 0.066
+ rms18 = 4.82134; weight18 = 0.000
+ rms19 = 4.79254; weight19 = 0.034
+ rms20 = 4.49329; weight20 = 0.000
+ rms21 = 4.32154; weight21 = 0.285
+ rms22 = 4.17306; weight22 = 0.176
+ rms23 = 4.14307; weight23 = 0.146
+ rms24 = 4.13229; weight24 = 0.000
+ rms25 = 4.119  ; weight25 = 0.048
+ rms26 = 4.0999 ; weight26 = 0.000
+ rms27 = 4.08682; weight27 = 0.032
+ rms28 = 4.07666; weight28 = 0.340
+ rms29 = 4.06758; weight29 = 0.039
+ 
+ sum = 0
+ do i = 1,29
+   sum = [sum] + [rms[i]] * [weight[i]]
+ enddo
+ mess all [sum]
+ 
+ 
+ sum = 0
+ do i = 1,3
+   sum = [sum] + [rms[i]] * [weight[i]]
+ enddo
+ mess s12 [sum]
+ sum = 0
+ do i = 4,6
+   sum = [sum] + [rms[i]] * [weight[i]]
+ enddo
+ mess d32 [sum]
+ sum = 0
+ do i = 7,9
+   sum = [sum] + [rms[i]] * [weight[i]]
+ enddo
+ mess d52 [sum]
+ sum = 0
+ do i = 10,19
+   sum = [sum] + [rms[i]] * [weight[i]]
+ enddo
+ mess p32 [sum]
+ sum = 0
+ do i = 20,29
+   sum = [sum] + [rms[i]] * [weight[i]]
+ enddo
+ mess f72 [sum]
+   
+ return
+ 
+ 
+ macro plot2
+   zon23
+   zon 2 5
+   
+   set stat 1101
+   do i = 1,10
+     hid = [i]071
+     hi/pl [hid](0.:40.)
+   enddo   
+ return
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

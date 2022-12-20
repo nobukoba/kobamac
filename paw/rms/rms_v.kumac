@@ -1,0 +1,55 @@
+ macro main
+ exe calc
+ exe plot1
+   exe plot2
+return
+ 
+ macro calc
+   hi/del *
+   fetch 31ne_10pnts.hbk
+   
+   hid = 1071
+   xbins = $hinfo([hid],'xbins')
+   xmax = $hinfo([hid],'xmax')
+   xmin = $hinfo([hid],'xmin')
+   dx  = ([xmax] - [xmin])/[xbins]
+   
+   vec/cre xx([xbins]) 'r'
+   get/abs [hid] xx
+   
+   do i = 1,10
+     hid = [i]071
+     vec/cre wfb[i]([xbins]) 'r'
+     get/con [hid] wfb[i]
+     sigma r2wf[i]=xx**2*wfb[i]**2
+     sigma wf2[i]=wfb[i]**2
+     sigma rms[i]=sqrt(vsum(r2wf[i])*[dx])
+     1d [i]073 wf2[i] [xbins] [xmin] [xmax]
+     1d [i]074 r2wf[i] [xbins] [xmin] [xmax]
+     put/con [i]073 wf2[i]
+     put/con [i]074 r2wf[i]
+   enddo
+   
+   do i = 1,10
+     mess rms[i] $htitle([i]071) $rsigma(rms[i](1))
+   enddo
+ return
+ 
+ macro plot1
+   vec/cre eb(10) r  -5.19512 -4.49764 -3.82534 -3.18127 -2.56911 -1.99144 -1.45275 -0.96091 -0.52350 -0.15736
+   vec/cre rmsv(10) r 4.37096 4.47871 4.6039  4.75239 4.93316 5.16084 5.46286 5.89726 6.62577 8.46291
+   graph 10 eb rmsv
+   atit 'S?n! (MeV)' 'RMS (fm)' ! 222
+ return
+ 
+ macro plot2
+   zon23
+   zon 2 5
+   
+   set stat 1101
+   do i = 1,10
+     hid = [i]071
+     hi/pl [hid](0.:40.)
+   enddo
+   
+ return

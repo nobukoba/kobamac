@@ -1,0 +1,127 @@
+*** Begin of history file: Thu Sep 26 07:57:38 2013
+sh
+exe makehbk_from_be1_jt
+exe ./makehbk_from_be1_jt
+sh
+exe ./makehbk_from_be1_jt
+exe ./makehbk_from_be1_jt
+exe ./makehbk_from_be1_jt
+sh
+exe ./makehbk_from_be1_jt
+i
+hi/li
+hi/li
+ht 101
+hi/pl 101
+hi/pl 101
+hi/pl 102
+hi/pl 103
+hi/pl 104
+hi/pl 201
+hi/pl 202
+hi/pl 203
+hi/pl 204
+hi/pl 205
+hi/pl 206
+hi/pl 207
+hi/pl 201
+hi/pl 202
+hi/pl 201
+hi/pl 202
+hi/pl 201
+hi/pl 202
+hi/pl 201
+hi/pl 202
+hi/pl 203
+hi/pl 301
+hi/pl 302
+hi/pl 303
+hi/pl 303
+hi/pl 304
+hi/pl 401
+hi/pl 402
+hi/pl 401
+exe ./makehbk_from_be1_jt
+sh
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+hi/li
+hi/pl 101
+hi/pl 401
+hi/pl 410
+hi/pl 101
+hi/pl 410
+hi/pl 101
+hi/pl 410
+hi/pl 101
+hi/pl 410
+hi/pl 101
+hi/pl 410
+hi/pl 101
+hi/pl 410
+hi/pl 101
+hi/pl 410
+hi/pl 101
+hi/pl 410
+hi/pl 101
+hi/pl 410
+hi/pl 101
+hi/pl 410
+hi/pl 101
+hi/pl 410
+hi/pl 101
+hi/pl 410
+hi/pl 410
+hi/pl 101
+hi/pl 410
+hi/pl 101
+hi/pl 410
+hi/pl 101
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+.q
+exe ./rms_v_37mg
+sh
+exe ./makehbk_from_be1_jt_chk
+hi/dle *
+hi/del *
+exe ./makehbk_from_be1_jt_chk
+.ls
+hi/li
+exe ./rms_v_37mg_chk
+exe ./rms_v_37mg_chk
+exe ./rms_v_37mg_chk
+exe ./rms_v_37mg_chk
+exe ./rms_v_37mg_chk
+exe ./rms_v_37mg_chk
+exe ./rms_v_37mg_chk
+exe ./rms_v_37mg_chk
+pp
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+pp
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+exe ./rms_v_37mg
+pp
+exe ./rms_v_37mg
+*** End   of history file: Thu Sep 26 09:24:52 2013

@@ -1,0 +1,32 @@
+ macro main
+   hi/del *
+   
+   ndv = 1000
+   ac    = 30.             | u
+   an    = 1.              | u
+   diff  = 0.67            | fm
+   r0    = 1.27            | fm
+   rds   = $rsigma([r0]*[ac]**(1./3.))  | fm
+   
+   1d 101 rho   [ndv] 0 50
+   1d 102 r2rho [ndv] 0 50
+   1d 103 r44ho [ndv] 0 50
+   vec/cre rr([ndv])
+   get/abs 101 rr
+   dr = $rsigma(rr(2)-rr(1))
+   
+   sigma rho = 1/(1+exp((rr-([rds]))/[diff]))
+   sigma r2rho = rho * rr**2
+   sigma r4rho = rho * rr**4
+   base = $sigma(sqrt(vsum(r2rho)*[dr]))
+   rms  = $sigma(sqrt(vsum(r4rho)*[dr]))
+   rms  = [rms] / [base]
+   
+   put/con 101 rho
+   put/con 102 r2rho
+   put/con 103 r4rho
+   mess base : [base], rms : [rms], 
+   
+* vec/pri rr
+   
+ return

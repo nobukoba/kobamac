@@ -1,0 +1,22 @@
+ macro main
+   i = 1
+   for str1 in s12 d32 d52
+     hid = [i] * 100 + 1
+     i = [i] + 1
+     for str2 in '3400' '3410' '3480'
+       xy2h [hid] /home/koba/Dropbox/works/be1_jt/dat/37mg_each_states/[str1]_[str2]/fort.19
+       hid = [hid] +1
+     endfor
+   endfor
+   for str1 in p32 f72
+     hid = [i] * 100 + 1
+     i = [i] + 1
+     for str2 in '0190' '0990' '2120' '2410' '2520' '2660' '2870' '3020' '3140' '3250'
+       xy2h [hid] /home/koba/Dropbox/works/be1_jt/dat/37mg_each_states/[str1]_[str2]/fort.19
+       hid = [hid] +1
+     endfor
+   endfor
+* hsto 37mg_each_state.hbk
+ return
+ 
+
